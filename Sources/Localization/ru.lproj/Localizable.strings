@@ -1,0 +1,8 @@
+"presenter_configuration_technicalWorksAlertTitle" = "Технические работы";
+"presenter_configuration_technicalWorksAlertMessage" = "Попробуйте войти позже";
+"presenter_configuration_iosMinimalVersionAlertTitle" = "Доступна новая версия";
+"presenter_configuration_iosMinimalVersionAlertMessage" = "Для продолжения необходимо обновить приложение";
+"presenter_configuration_iosActualVersionAlertTitle" = "Доступна новая версия";
+"presenter_configuration_tryAgainAlertActionTitle" = "Попробовать";
+"presenter_configuration_continueWithoutUpdatingAlertActionTitle" = "Продолжить без обновления";
+"presenter_configuration_appUpdateAlertActionTitle" = "Обновить приложение";

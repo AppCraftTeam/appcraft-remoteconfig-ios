@@ -1,0 +1,8 @@
+"presenter_configuration_technicalWorksAlertTitle" = "Technical works";
+"presenter_configuration_technicalWorksAlertMessage" = "Please try to login later";
+"presenter_configuration_iosMinimalVersionAlertTitle" = "New version available";
+"presenter_configuration_iosMinimalVersionAlertMessage" = "You need to update the application to continue";
+"presenter_configuration_iosActualVersionAlertTitle" = "New version available";
+"presenter_configuration_tryAgainAlertActionTitle" = "Try now";
+"presenter_configuration_continueWithoutUpdatingAlertActionTitle" = "Continue without updating";
+"presenter_configuration_appUpdateAlertActionTitle" = "Update App";
