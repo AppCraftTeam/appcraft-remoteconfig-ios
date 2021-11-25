@@ -38,15 +38,14 @@ class ViewController: UIViewController {
     }
     
     func checkApplicationAvailability() {
-//        self.verifyApplicationAvailability.fetchAndVerify { verifed in
-//            guard verifed else { return }
-//
-//            self.present(UIAlertController(title: "App verifed!", message: nil, preferredStyle: .alert), animated: true, completion: nil)
-//        }
-        
-        self.verifyApplicationAvailability.fetchOnlyRelease = false
-        self.verifyApplicationAvailability.verify(fromModel: .init(iosActualVersion: "1.0.0", iosMinimalVersion: "2.0.0", technicalWorks: true)) { _ in
-            //
+        self.verifyApplicationAvailability.fetchAndVerify { verifed in
+            guard verifed else { return }
+
+            self.present(
+                UIAlertController(title: "App verifed! Show next screen", message: nil, preferredStyle: .alert),
+                animated: true,
+                completion: nil
+            )
         }
     }
 
