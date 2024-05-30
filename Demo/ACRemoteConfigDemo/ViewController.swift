@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     lazy var verifyApplicationAvailability: ACVerifyApplicationAvailability = {
         let result = ACVerifyApplicationAvailability()
         result.viewController = self
+        result.style.presentation.size = .center(horizontalInset: 16, height: 300)
         
         return result
     }()
@@ -48,7 +49,4 @@ class ViewController: UIViewController {
             )
         }
     }
-
-
 }
-
