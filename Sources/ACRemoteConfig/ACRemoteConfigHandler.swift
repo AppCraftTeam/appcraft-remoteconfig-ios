@@ -2,6 +2,7 @@ import Foundation
 import FirebaseRemoteConfig
 
 open class ACRemoteConfigHandler: NSObject {
+    
     public typealias FetchCompletion = (Error?) -> Void
     
     // MARK: - Init

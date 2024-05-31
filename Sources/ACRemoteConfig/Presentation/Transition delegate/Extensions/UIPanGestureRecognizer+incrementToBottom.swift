@@ -1,5 +1,5 @@
 //
-//  BSTransitionDriver.swift
+//  UIPanGestureRecognizer+incrementToBottom.swift
 //  ACRemoteConfig
 //
 //  Created by Damian Bazhenov on 30.05.2024.

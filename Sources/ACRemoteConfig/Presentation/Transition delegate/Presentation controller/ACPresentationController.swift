@@ -36,7 +36,6 @@ class ACPresentationController: UIPresentationController {
             return CGRect(x: 0, y: bounds.height - size.height, width: size.width, height: size.height)
         case let .center(horizontalInset, height):
             return CGRect(x: horizontalInset, y: bounds.height / 2 - height * 0.5, width: bounds.width - horizontalInset * 2, height: height)
-
         }
     }
     
@@ -60,23 +59,14 @@ class ACPresentationController: UIPresentationController {
         }
     }
     
-    var driver: BSTransitionDriver
     
     override init(presentedViewController: UIViewController, presenting: UIViewController?) {
-        self.driver = BSTransitionDriver()
-        super.init(presentedViewController: presentedViewController, presenting: presenting)
-    }
-    
-    init(presentedViewController: UIViewController, presenting: UIViewController?, driver: BSTransitionDriver) {
-        self.driver = driver
         super.init(presentedViewController: presentedViewController, presenting: presenting)
     }
     
     override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
-        if completed {
-            driver.direction = .dismiss
-        }
+        
     }
 }
 

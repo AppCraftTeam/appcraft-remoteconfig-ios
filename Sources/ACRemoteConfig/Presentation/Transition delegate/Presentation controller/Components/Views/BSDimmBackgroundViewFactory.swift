@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct BSDimmBackgroundViewFactory: BSCustomPresentationBackgroundFactory {
+struct BSDimmBackgroundViewFactory: ACCustomPresentationBackgroundFactory {
     
     let backgroundColor: UIColor
     
