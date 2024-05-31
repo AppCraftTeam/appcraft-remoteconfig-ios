@@ -21,7 +21,8 @@ extension Style where T == ACMessageViewController {
 extension Style where T == UIButton {
     public static var `default`: Style {
         .init { button in
-            button.setTitleColor(.label, for: .normal)
+            let color: UIColor = if #available(iOS 13, *) { .label } else { .black }
+            button.setTitleColor(color, for: .normal)
         }
     }
     

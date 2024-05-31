@@ -7,7 +7,7 @@ let package = Package(
     name: "ACRemoteConfig",
     defaultLocalization: "ru",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v11),
         .macOS(.v10_12)
     ],
     products: [

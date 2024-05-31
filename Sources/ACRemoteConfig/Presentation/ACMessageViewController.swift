@@ -47,7 +47,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     
     public var titleLabelStyle = Style<UILabel>(make: { label in
         label.font = .systemFont(ofSize: 24, weight: .semibold)
-        label.textColor = .label
+        label.textColor = if #available(iOS 13, *) { .label } else { .black }
     })
     
     public var subtitleText: String {
@@ -60,7 +60,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     
     public var subTitleLabelStyle = Style<UILabel>(make: { label in
         label.font = .systemFont(ofSize: 16)
-        label.textColor = .label
+        label.textColor = if #available(iOS 13, *) { .label } else { .black }
         label.numberOfLines = 0
     })
     
@@ -135,11 +135,11 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     
     open func addActions(_ actions: [ActionModel]) {
         for action in actions {
-            let button = UIButton()
+            let button = ActionButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.heightAnchor.constraint(equalToConstant: 40).isActive = true
             button.setTitle(action.text, for: .normal)
-            button.addAction(UIAction(handler: { _ in action.action() }), for: .touchUpInside)
+            button.onAction = action.action
             action.style.make(button)
             self.actionsStackView.addArrangedSubview(button)
         }

@@ -42,15 +42,12 @@ open class ACRemoteConfigHandler: NSObject {
         }
         
         self.remoteConfig.fetch { [weak self] status, error in
-            print("[ACRemoteConfigHandler] - [fetch] - error:", error ?? "nil")
-            
             guard error == nil, status == .success else {
                 completion?(error)
                 return
             }
 
             self?.remoteConfig.activate { _, error in
-                print("[ACRemoteConfigHandler] - [activate] - error:", error ?? "nil")
                 completion?(error)
             }
         }
