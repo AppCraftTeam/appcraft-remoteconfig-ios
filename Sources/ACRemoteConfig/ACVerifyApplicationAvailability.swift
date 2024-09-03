@@ -2,17 +2,77 @@ import Foundation
 import UIKit
 import FirebaseRemoteConfig
 
+public struct ACVerifyApplicationAvailabilityStyle {
+    public var presentation: PresentationModel
+    public var viewStyle: Style<ACMessageViewController>?
+
+    public var technicalWorkButtonStyle: Style<UIButton>
+    public var actualVersionAproveButtonStyle: Style<UIButton>
+    public var actualVersionCancelButtonStyle: Style<UIButton>
+
+    public var minimalVersionButtonStyle: Style<UIButton>
+    
+    public var viewControllerFactory: ACMessageViewControllerFactory = DefaultMessageViewControllerFactory()
+    
+    public init(
+        presentation: PresentationModel = .default,
+        viewStyle: Style<ACMessageViewController> = .default,
+        technicalWorkButtonStyle: Style<UIButton> = .default,
+        minimalVersionButtonStyle: Style<UIButton> = .default,
+        actualVersionAproveButtonStyle: Style<UIButton> = .default,
+        actualVersionCancelButtonStyle: Style<UIButton> = .cancel
+    ) {
+        self.viewStyle = viewStyle
+        self.presentation = presentation
+        self.technicalWorkButtonStyle = technicalWorkButtonStyle
+        self.minimalVersionButtonStyle = minimalVersionButtonStyle
+        self.actualVersionAproveButtonStyle = actualVersionAproveButtonStyle
+        self.actualVersionCancelButtonStyle = actualVersionCancelButtonStyle
+    }
+}
+
+public struct PresentationModel {
+    public var cornerRadius: CGFloat
+    public var animationDuration: TimeInterval
+    public var size: ACPresentationControllerSize
+    public var backgroundFactory: ACCustomPresentationBackgroundFactory
+    
+    public static var `default`: PresentationModel {
+        .init(
+            cornerRadius: 16,
+            animationDuration: 0.25,
+            size: .percent(value: 0.5),
+            backgroundFactory: BSDimmBackgroundViewFactory()
+        )
+    }
+    
+    public func makeDelegate() -> ACTransitionDelegate {
+        ACTransitionDelegate(
+            cornerRadius: cornerRadius,
+            animationDuration: animationDuration,
+            size: size,
+            backgroundFactory: backgroundFactory
+        )
+    }
+}
+
 open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
+    
     public typealias VerifyCompletion = (Bool) -> Void
     
     // MARK: - Props
     open weak var viewController: UIViewController?
+    
+    open var style = ACVerifyApplicationAvailabilityStyle()
+    
     open var configuration: Configuration = .default()
     
     // MARK: - Methods
     open func fetchAndVerify(completion: VerifyCompletion?) {
         guard self.fetchAvalible() else {
-            completion?(true)
+            self.showTechnicalWorksAlert { [weak self] in
+                self?.fetchAndVerify(completion: completion)
+            }
             return
         }
         
@@ -24,7 +84,10 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
                 return
             }
         
-            self.verify(fromModel: RemoteConfigModel(remoteConfig: self.remoteConfig), completion: completion)
+            self.verify(
+                fromModel: RemoteConfigModel(remoteConfig: self.remoteConfig),
+                completion: completion
+            )
         }
     }
     
@@ -34,16 +97,12 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
             return
         }
 
-        print("[ACVerifyApplicationAvailability] - [verify] - model:", model)
-
         guard !model.technicalWorks else {
-            print("[ACVerifyApplicationAvailability] - [verify] - technicalWorks")
 
             self.showTechnicalWorksAlert { [weak self] in
                 self?.fetchAndVerify(completion: completion)
             }
             completion?(false)
-
             return
         }
 
@@ -56,10 +115,8 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
         }
 
         let appVersionFull = "\(appVersion).\(buildNumber)"
-        print("[ACVerifyApplicationAvailability] - [verify] - appVersionFull:", appVersionFull)
 
         if appVersionFull.compare(model.iosMinimalVersion, options: .numeric) == .orderedAscending {
-            print("[ACVerifyApplicationAvailability] - [verify] - iosMinimalVersion - orderedAscending")
 
             self.showIosMinimalVersionAlert { [weak self] in
                 self?.openAppInAppStore { _ in
@@ -68,7 +125,6 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
             }
 
         } else if appVersionFull.compare(model.iosActualVersion, options: .numeric) == .orderedAscending {
-            print("[ACVerifyApplicationAvailability] - [verify] - iosActualVersion - orderedAscending")
 
             self.showIosActualVersionAlert(
                 tapAppUpdate: { [weak self] in
@@ -80,7 +136,6 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
                     completion?(true)
                 }
             )
-
         } else {
             completion?(true)
         }
@@ -135,7 +190,6 @@ public extension ACVerifyApplicationAvailability {
             func localized(_ key: String) -> String {
                 NSLocalizedString(key, bundle: .module, comment: "")
             }
-            
             return Configuration(
                 urlToAppInAppStore: nil,
                 technicalWorksAlertTitle: localized("presenter_configuration_technicalWorksAlertTitle"),
@@ -156,68 +210,85 @@ public extension ACVerifyApplicationAvailability {
 // MARK: - UI
 extension ACVerifyApplicationAvailability {
     
-    open func showTechnicalWorksAlert(tapTryAgain: (() -> Void)?) {
-        let alert = UIAlertController(
-            title: self.configuration.technicalWorksAlertTitle,
-            message: self.configuration.technicalWorksAlertMessage,
-            preferredStyle: .alert
-        )
+    public func showTechnicalWorksAlert(tapTryAgain: (() -> Void)?) {
+        let vc = style.viewControllerFactory.make()
+        vc.titleText = configuration.technicalWorksAlertTitle ?? ""
+        vc.subtitleText = configuration.technicalWorksAlertMessage ?? ""
         
-        alert.addAction(.init(title: self.configuration.tryAgainAlertActionTitle, style: .default, handler: { _ in
-            tapTryAgain?()
-        }))
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.viewController?.present(alert, animated: true, completion: nil)
-        }
+        vc.addActions([
+            .init(
+                text: configuration.tryAgainAlertActionTitle,
+                style: style.technicalWorkButtonStyle,
+                action: {
+                    tapTryAgain?()
+                }
+            )
+        ])
+        self.showSheetViewController(vc)
     }
     
-    open func showIosMinimalVersionAlert(tapAppUpdate: (() -> Void)?) {
-        let alert = UIAlertController(
-            title: self.configuration.iosMinimalVersionAlertTitle,
-            message: self.configuration.iosMinimalVersionAlertMessage,
-            preferredStyle: .alert
-        )
+    public func showIosMinimalVersionAlert(tapAppUpdate: (() -> Void)?) {
+        let viewController = style.viewControllerFactory.make()
+        viewController.titleText = configuration.iosMinimalVersionAlertTitle ?? ""
+        viewController.subtitleText = configuration.iosMinimalVersionAlertMessage ?? ""
         
-        alert.addAction(.init(title: self.configuration.appUpdateAlertActionTitle, style: .default, handler: { _ in
-            tapAppUpdate?()
-        }))
+        viewController.addActions([
+            .init(
+                text: self.configuration.appUpdateAlertActionTitle,
+                style: self.style.minimalVersionButtonStyle,
+                action: { tapAppUpdate?() }
+            )
+        ])
         
-        DispatchQueue.main.async { [weak self] in
-            self?.viewController?.present(alert, animated: true, completion: nil)
-        }
+        self.showSheetViewController(viewController)
     }
     
-    open func showIosActualVersionAlert(tapAppUpdate: (() -> Void)?, tapContinueWithoutUpdating: (() -> Void)?) {
-        let alert = UIAlertController(
-            title: self.configuration.iosActualVersionAlertTitle,
-            message: self.configuration.iosActualVersionAlertMessage,
-            preferredStyle: .alert
-        )
+    public func showIosActualVersionAlert(tapAppUpdate: (() -> Void)?, tapContinueWithoutUpdating: (() -> Void)?) {
+        let viewController = style.viewControllerFactory.make()
+        viewController.titleText = configuration.iosActualVersionAlertTitle ?? ""
+        viewController.subtitleText = configuration.iosActualVersionAlertMessage ?? ""
         
-        alert.addAction(.init(title: self.configuration.appUpdateAlertActionTitle, style: .default, handler: { _ in
-            tapAppUpdate?()
-        }))
-        
-        alert.addAction(.init(title: self.configuration.continueWithoutUpdatingAlertActionTitle, style: .cancel, handler: { _ in
-            tapContinueWithoutUpdating?()
-        }))
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.viewController?.present(alert, animated: true, completion: nil)
-        }
+        viewController.addActions([
+            .init(
+                text: self.configuration.appUpdateAlertActionTitle,
+                style: self.style.actualVersionAproveButtonStyle,
+                action: {
+                    tapAppUpdate?()
+                }
+            ),
+            .init(
+                text: self.configuration.continueWithoutUpdatingAlertActionTitle,
+                style: self.style.actualVersionCancelButtonStyle,
+                action: { [weak viewController] in
+                    viewController?.dismiss(animated: true)
+                    tapContinueWithoutUpdating?()
+                }
+            )
+        ])
+        self.showSheetViewController(viewController)
     }
     
-    open func openAppInAppStore(completion: ((Bool) -> Void)?) {
+    public func openAppInAppStore(completion: ((Bool) -> Void)?) {
         guard let url = self.configuration.urlToAppInAppStore else {
             print("[ACVerifyApplicationAvailability] - [openAppUpdate] - urlToAppInAppStore == nil")
             completion?(false)
             return
         }
-        
+
         DispatchQueue.main.async {
             UIApplication.shared.open(url, options: [:], completionHandler: completion)
         }
     }
     
+    func showSheetViewController(_ viewController: UIViewController) {
+        let transitionDelegate = ACTransitionDelegate(
+            cornerRadius: style.presentation.cornerRadius,
+            animationDuration: style.presentation.animationDuration,
+            size: style.presentation.size,
+            backgroundFactory: style.presentation.backgroundFactory
+        )
+        viewController.transitioningDelegate = transitionDelegate
+        viewController.modalPresentationStyle = .custom
+        self.viewController?.present(viewController, animated: true, completion: nil)
+    }
 }

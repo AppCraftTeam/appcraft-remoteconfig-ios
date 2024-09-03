@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     lazy var verifyApplicationAvailability: ACVerifyApplicationAvailability = {
         let result = ACVerifyApplicationAvailability()
         result.viewController = self
-        
+        result.style.presentation.size = .percent(value: 1)
         return result
     }()
 
@@ -48,7 +48,4 @@ class ViewController: UIViewController {
             )
         }
     }
-
-
 }
-
