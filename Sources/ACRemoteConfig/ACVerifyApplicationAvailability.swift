@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import FirebaseRemoteConfig
 
 public struct ACVerifyApplicationAvailabilityStyle {
     public var presentation: PresentationModel
@@ -56,7 +55,7 @@ public struct PresentationModel {
     }
 }
 
-open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
+open class ACVerifyApplicationAvailability {
     
     public typealias VerifyCompletion = (Bool) -> Void
     
@@ -68,39 +67,16 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
     open var configuration: Configuration = .default()
     
     // MARK: - Methods
-    open func fetchAndVerify(completion: VerifyCompletion?) {
-        guard self.fetchAvalible() else {
-            self.showTechnicalWorksAlert { [weak self] in
-                self?.fetchAndVerify(completion: completion)
-            }
-            return
-        }
-        
-        self.fetch { [weak self] error in
-            guard let self = self else { return }
-            
-            guard error == nil else {
-                completion?(true)
-                return
-            }
-        
-            self.verify(
-                fromModel: RemoteConfigModel(remoteConfig: self.remoteConfig),
-                completion: completion
-            )
-        }
-    }
-    
-    open func verify(fromModel model: RemoteConfigModel?, completion: VerifyCompletion?) {
+
+    open func verify(fromModel model: ACRemoteConfig?, completion: VerifyCompletion?, didTryAgain: (() -> Void)?) {
         guard let model = model else {
             completion?(true)
             return
         }
 
         guard !model.technicalWorks else {
-
-            self.showTechnicalWorksAlert { [weak self] in
-                self?.fetchAndVerify(completion: completion)
+            self.showTechnicalWorksAlert {
+                didTryAgain?()
             }
             completion?(false)
             return
@@ -141,39 +117,16 @@ open class ACVerifyApplicationAvailability: ACRemoteConfigHandler {
         }
     }
     
+    public init(viewController: UIViewController? = nil, style: ACVerifyApplicationAvailabilityStyle = ACVerifyApplicationAvailabilityStyle(), configuration: Configuration) {
+        self.viewController = viewController
+        self.style = style
+        self.configuration = configuration
+    }
 }
 
 // MARK: - Models
 public extension ACVerifyApplicationAvailability {
-    
-    struct RemoteConfigModel: ACRemoteConfigModelProtocol {
-        public let iosActualVersion: String
-        public let iosMinimalVersion: String
-        public let technicalWorks: Bool
-        
-        public enum CodingKeys: String, CodingKey {
-            case iosActualVersion = "iosActualVersion"
-            case iosMinimalVersion = "iosMinimalVersion"
-            case technicalWorks = "technicalWorks"
-        }
-        
-        public init?(remoteConfig: RemoteConfig) {
-            self.iosActualVersion = remoteConfig[CodingKeys.iosActualVersion.rawValue].stringValue ?? ""
-            self.iosMinimalVersion = remoteConfig[CodingKeys.iosMinimalVersion.rawValue].stringValue ?? ""
-            self.technicalWorks = remoteConfig[CodingKeys.technicalWorks.rawValue].boolValue
-        }
-        
-        public init(
-            iosActualVersion: String,
-            iosMinimalVersion: String,
-            technicalWorks: Bool
-        ) {
-            self.iosActualVersion = iosActualVersion
-            self.iosMinimalVersion = iosMinimalVersion
-            self.technicalWorks = technicalWorks
-        }
-    }
-    
+   
     struct Configuration {
         public var urlToAppInAppStore: URL?
         public var technicalWorksAlertTitle: String?
@@ -281,6 +234,10 @@ extension ACVerifyApplicationAvailability {
     }
     
     func showSheetViewController(_ viewController: UIViewController) {
+        if self.viewController?.topMostViewController() is ACMessageViewController {
+            return
+        }
+        
         let transitionDelegate = ACTransitionDelegate(
             cornerRadius: style.presentation.cornerRadius,
             animationDuration: style.presentation.animationDuration,

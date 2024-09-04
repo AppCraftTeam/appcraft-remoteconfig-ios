@@ -1,12 +1,14 @@
 import Foundation
+import ACRemoteConfig
+import UIKit
 import FirebaseRemoteConfig
 
-open class ACRemoteConfigHandler: NSObject {
+ class ACRemoteConfigHandler: NSObject {
     
-    public typealias FetchCompletion = (Error?) -> Void
+     typealias FetchCompletion = (Error?) -> Void
     
     // MARK: - Init
-    public override init() {
+     override init() {
         self.remoteConfig = .remoteConfig()
         
         super.init()
@@ -17,11 +19,11 @@ open class ACRemoteConfigHandler: NSObject {
     }
     
     // MARK: - Props
-    open var remoteConfig: RemoteConfig
-    open var fetchOnlyRelease: Bool = true
+     var remoteConfig: RemoteConfig
+     var fetchOnlyRelease: Bool = true
     
     // MARK: - Methods
-    open func fetchAvalible() -> Bool {
+     func fetchAvalible() -> Bool {
         guard self.fetchOnlyRelease else { return true }
         
         #if DEBUG
@@ -35,7 +37,7 @@ open class ACRemoteConfigHandler: NSObject {
         #endif
     }
     
-    open func fetch(completion: FetchCompletion? = nil) {
+     func fetch(completion: FetchCompletion? = nil) {
         guard self.fetchAvalible() else {
             completion?(nil)
             return
@@ -53,4 +55,7 @@ open class ACRemoteConfigHandler: NSObject {
         }
     }
     
+     func getRemoteConfigModel() -> RemoteConfigModel? {
+        return RemoteConfigModel(remoteConfig: self.remoteConfig)
+    }
 }
