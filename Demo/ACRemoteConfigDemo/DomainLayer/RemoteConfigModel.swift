@@ -9,7 +9,7 @@ import ACRemoteConfig
 import FirebaseRemoteConfig
 import Foundation
 
-struct RemoteConfigModel: ACRemoteConfigModelProtocol {
+struct RemoteConfigModel: ACRemoteConfig, ACRemoteConfigModelProtocol {
     public let iosActualVersion: String
     public let iosMinimalVersion: String
     public let technicalWorks: Bool
@@ -34,16 +34,5 @@ struct RemoteConfigModel: ACRemoteConfigModelProtocol {
         self.iosActualVersion = iosActualVersion
         self.iosMinimalVersion = iosMinimalVersion
         self.technicalWorks = technicalWorks
-    }
-}
-
-extension ACRemoteConfig {
-    
-    static func create(from configModel: RemoteConfigModel) -> ACRemoteConfig {
-        ACRemoteConfig(
-            iosActualVersion: configModel.iosActualVersion,
-            iosMinimalVersion: configModel.iosActualVersion,
-            technicalWorks: configModel.technicalWorks
-        )
     }
 }

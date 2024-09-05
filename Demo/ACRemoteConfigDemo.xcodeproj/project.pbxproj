@@ -30,7 +30,7 @@
 		9591DDB62C88443A00D2DB56 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 9591DDB52C88443A00D2DB56 /* FirebaseStorage */; };
 		9591DDB82C88443A00D2DB56 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 9591DDB72C88443A00D2DB56 /* FirebaseStorageCombine-Community */; };
 		9591DDBA2C88443A00D2DB56 /* FirebaseVertexAI-Preview in Frameworks */ = {isa = PBXBuildFile; productRef = 9591DDB92C88443A00D2DB56 /* FirebaseVertexAI-Preview */; };
-		9591DDBC2C8844EA00D2DB56 /* RemoteConfigHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDBB2C8844EA00D2DB56 /* RemoteConfigHandle.swift */; };
+		9591DDBC2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDBB2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift */; };
 		9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */; };
 		9591DDC22C885E2600D2DB56 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */; };
 		9591DDC92C88659700D2DB56 /* RemoteConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */; };
@@ -43,7 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9591DDBB2C8844EA00D2DB56 /* RemoteConfigHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigHandle.swift; sourceTree = "<group>"; };
+		9591DDBB2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseRemoteConfigService.swift; sourceTree = "<group>"; };
 		9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACRemoteConfigModelProtocol.swift; sourceTree = "<group>"; };
 		9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigModel.swift; sourceTree = "<group>"; };
@@ -96,7 +96,7 @@
 		9591DDC32C88656700D2DB56 /* ServiceLayer */ = {
 			isa = PBXGroup;
 			children = (
-				9591DDBB2C8844EA00D2DB56 /* RemoteConfigHandle.swift */,
+				9591DDBB2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift */,
 			);
 			path = ServiceLayer;
 			sourceTree = "<group>";
@@ -294,7 +294,7 @@
 			files = (
 				E2E5D3DD274EBC5700562431 /* MainViewController.swift in Sources */,
 				9591DDC92C88659700D2DB56 /* RemoteConfigModel.swift in Sources */,
-				9591DDBC2C8844EA00D2DB56 /* RemoteConfigHandle.swift in Sources */,
+				9591DDBC2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift in Sources */,
 				E2E5D3D9274EBC5700562431 /* AppDelegate.swift in Sources */,
 				E2E5D3DB274EBC5700562431 /* SceneDelegate.swift in Sources */,
 				9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */,

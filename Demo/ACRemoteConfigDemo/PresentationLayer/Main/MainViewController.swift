@@ -17,7 +17,7 @@ class MainViewController: UIViewController {
     lazy var verifyApplicationAvailability: ACVerifyApplicationAvailability = {
         let result = ACVerifyApplicationAvailability(configuration: .default())
         result.viewController = self
-        result.style.presentation.size = .percent(value: 1)
+        result.style.presentation.size = .percent(value: 0.5)
         return result
     }()
     
@@ -41,8 +41,8 @@ class MainViewController: UIViewController {
     }
     
     func checkApplicationAvailability() {
-        let handler = ACRemoteConfigHandler()
-        handler.fetchOnlyRelease = false
+        let handler = FirebaseRemoteConfigService()
+        handler.fetchOnlyInRelease = false
         
         fetchAndHandeActialConfig()
         
@@ -57,7 +57,7 @@ class MainViewController: UIViewController {
                         print("Technical Works: \(configModel.technicalWorks)")
                         
                         DispatchQueue.main.async {
-                            self.verifyApplicationAvailability.verify(fromModel: ACRemoteConfig.create(from: configModel)) { verifed in
+                            self.verifyApplicationAvailability.verify(fromModel: configModel) { verifed in
                                 guard verifed else { return }
                                 DispatchQueue.main.async {
                                     self.present(
