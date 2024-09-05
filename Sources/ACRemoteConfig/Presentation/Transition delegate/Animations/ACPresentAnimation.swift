@@ -9,14 +9,20 @@
 import UIKit
 import Foundation
 
+/// Handles the presentation animation of a view controller
 class ACPresentAnimation: NSObject {
     
+    /// The duration of the transition animation in seconds
     let duration: TimeInterval
     
+    /// Initializes the `ACPresentAnimation`
+    /// - Parameter duration: The duration of the animation
     init(duration: TimeInterval) {
         self.duration = duration
     }
     
+    /// Creates and returns a property animator to handle the presentation transition
+    /// - Parameter transitionContext: The context object containing information about the transition
     private func animator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating? {
         guard let to = transitionContext.view(forKey: .to), let viewController = transitionContext.viewController(forKey: .to) else {
             return nil
@@ -39,15 +45,21 @@ class ACPresentAnimation: NSObject {
 
 // MARK: - UIViewControllerAnimatedTransitioning mehtods
 extension ACPresentAnimation: UIViewControllerAnimatedTransitioning {
+    /// Returns the duration of the transition animation
+    /// - Parameter transitionContext: The context object containing information about the transition
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         duration
     }
     
+    /// Performs the transition animation.
+    /// - Parameter transitionContext: The context object containing information about the transition
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let animator = animator(using: transitionContext)
         animator?.startAnimation()
     }
     
+    /// Returns an interruptible animator object
+    /// - Parameter transitionContext: The context object containing information about the transition
     func interruptibleAnimator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
         guard let animator = animator(using: transitionContext) else {
             return UIViewPropertyAnimator()

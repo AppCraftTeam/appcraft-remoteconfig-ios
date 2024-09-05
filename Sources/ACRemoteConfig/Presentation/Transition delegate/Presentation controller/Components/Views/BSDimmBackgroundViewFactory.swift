@@ -8,14 +8,19 @@
 
 import UIKit
 
+/// A default implementation of the `ACCustomPresentationBackgroundFactory` that provides a dimmed background view
 struct BSDimmBackgroundViewFactory: ACCustomPresentationBackgroundFactory {
     
+    /// The color of the background view
     let backgroundColor: UIColor
     
+    /// Initializes the background factory
+    /// - Parameter backgroundColor: The color for the dimmed background view
     init(backgroundColor: UIColor = UIColor(white: 0, alpha: 0.3)) {
         self.backgroundColor = backgroundColor
     }
     
+    /// Creates and returns a dimmed background view
     func backgroundView() -> UIView {
         let view = UIView()
         view.backgroundColor = backgroundColor
