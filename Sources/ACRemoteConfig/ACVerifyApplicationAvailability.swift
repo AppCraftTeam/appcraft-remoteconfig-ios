@@ -7,7 +7,6 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     
     // MARK: - Props
     open weak var viewController: UIViewController?
-    open var style = ACVerifyApplicationAvailabilityStyle()
     open var configuration: ACVerifyConfiguration
     open var customUIFactory: ACVerifyUIFactory
     
@@ -17,9 +16,8 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
                 configuration: ACVerifyConfiguration,
                 customUIFactory: ACVerifyUIFactory? = nil) {
         self.viewController = viewController
-        self.style = style
         self.configuration = configuration
-        self.customUIFactory = customUIFactory ?? ACDefaultUIFactory()
+        self.customUIFactory = customUIFactory ?? ACDefaultUIFactory(style: style)
     }
     
     open func verify(fromModel model: ACRemoteConfig?, completion: VerifyCompletion?, didTryAgain: (() -> Void)?) {
@@ -48,27 +46,27 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     }
     
     private func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
-        showSheetViewController(
-            customUIFactory.makeIosMinimalVersionAlert(tapOpenStore: {
-                self.openAppInAppStore { _ in
-                    completion?(false)
-                }
-            })
+        customUIFactory.presentViewController(
+            customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
+                didTryAgain?()
+                completion?(false)
+            }), from: self.viewController
         )
     }
     
     private func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
-        showSheetViewController(
+        customUIFactory.presentViewController(
             customUIFactory.makeIosMinimalVersionAlert(tapOpenStore: {
                 self.openAppInAppStore { _ in
                     completion?(false)
                 }
-            })
+            }),
+            from: self.viewController
         )
     }
     
     private func showIosActualVersionAlert(completion: VerifyCompletion?) {
-        showSheetViewController(
+        customUIFactory.presentViewController(
             customUIFactory.makeIosActualVersionAlert(tapOpenStore: {
                 self.openAppInAppStore { _ in
                     completion?(false)
@@ -76,7 +74,8 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
             }, tapContinueWithoutUpdating: { [weak viewController] in
                 viewController?.dismiss(animated: true)
                 completion?(true)
-            })
+            }),
+            from: self.viewController
         )
     }
 }
@@ -101,23 +100,6 @@ private extension ACVerifyApplicationAvailability {
 
 // MARK: - UI
 private extension ACVerifyApplicationAvailability {
-    
-    func showSheetViewController(_ viewController: UIViewController) {
-        if self.viewController?.topMostViewController() is ACMessageViewController {
-            return
-        }
-        
-        let transitionDelegate = ACTransitionDelegate(
-            cornerRadius: style.presentation.cornerRadius,
-            animationDuration: style.presentation.animationDuration,
-            size: style.presentation.size,
-            backgroundFactory: style.presentation.backgroundFactory
-        )
-        
-        viewController.transitioningDelegate = transitionDelegate
-        viewController.modalPresentationStyle = .custom
-        self.viewController?.present(viewController, animated: true, completion: nil)
-    }
     
     func openAppInAppStore(completion: ((Bool) -> Void)?) {
         guard let url = self.configuration.urlToAppInAppStore else {

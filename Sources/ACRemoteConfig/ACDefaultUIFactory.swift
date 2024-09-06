@@ -9,10 +9,11 @@ import UIKit
 
 public class ACDefaultUIFactory: ACVerifyUIFactory {
     
-    public var style = ACVerifyApplicationAvailabilityStyle()
+    public var style: ACVerifyApplicationAvailabilityStyle
     public var configuration: ACDefaultUIConfiguration
     
-    public init(configuration: ACDefaultUIConfiguration = .default()) {
+    public init(style: ACVerifyApplicationAvailabilityStyle = ACVerifyApplicationAvailabilityStyle(),  configuration: ACDefaultUIConfiguration = .default()) {
+        self.style = style
         self.configuration = configuration
     }
     
@@ -75,5 +76,23 @@ public class ACDefaultUIFactory: ACVerifyUIFactory {
         ])
         
         return viewController
+    }
+    
+    public func presentViewController(_ viewController: UIViewController, from parentViewController: UIViewController?) {
+        if parentViewController?.topMostViewController() is ACMessageViewController {
+            #warning("todo need update ui or close vc")
+            return
+        }
+        
+        let transitionDelegate = ACTransitionDelegate(
+            cornerRadius: style.presentation.cornerRadius,
+            animationDuration: style.presentation.animationDuration,
+            size: style.presentation.size,
+            backgroundFactory: style.presentation.backgroundFactory
+        )
+        
+        viewController.transitioningDelegate = transitionDelegate
+        viewController.modalPresentationStyle = .custom
+        parentViewController?.present(viewController, animated: true, completion: nil)
     }
 }

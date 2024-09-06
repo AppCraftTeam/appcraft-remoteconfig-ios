@@ -10,6 +10,10 @@ import UIKit
 
 public struct Style<T> {
     let make: (T) -> Void
+    
+    public init(make: @escaping (T) -> Void) {
+        self.make = make
+    }
 }
 
 extension Style where T == ACMessageViewController {

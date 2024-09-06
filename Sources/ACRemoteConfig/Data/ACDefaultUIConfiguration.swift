@@ -27,4 +27,16 @@ public struct ACDefaultUIConfiguration {
             appUpdateAlertActionTitle: localized("presenter_configuration_appUpdateAlertActionTitle")
         )
     }
+    
+    public init(technicalWorksAlertTitle: String? = nil, technicalWorksAlertMessage: String? = nil, iosMinimalVersionAlertTitle: String? = nil, iosMinimalVersionAlertMessage: String? = nil, iosActualVersionAlertTitle: String? = nil, iosActualVersionAlertMessage: String? = nil, tryAgainAlertActionTitle: String, continueWithoutUpdatingAlertActionTitle: String, appUpdateAlertActionTitle: String) {
+        self.technicalWorksAlertTitle = technicalWorksAlertTitle
+        self.technicalWorksAlertMessage = technicalWorksAlertMessage
+        self.iosMinimalVersionAlertTitle = iosMinimalVersionAlertTitle
+        self.iosMinimalVersionAlertMessage = iosMinimalVersionAlertMessage
+        self.iosActualVersionAlertTitle = iosActualVersionAlertTitle
+        self.iosActualVersionAlertMessage = iosActualVersionAlertMessage
+        self.tryAgainAlertActionTitle = tryAgainAlertActionTitle
+        self.continueWithoutUpdatingAlertActionTitle = continueWithoutUpdatingAlertActionTitle
+        self.appUpdateAlertActionTitle = appUpdateAlertActionTitle
+    }
 }

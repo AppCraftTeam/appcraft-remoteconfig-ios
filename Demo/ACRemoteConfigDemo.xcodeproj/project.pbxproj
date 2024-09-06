@@ -34,6 +34,12 @@
 		9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */; };
 		9591DDC22C885E2600D2DB56 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */; };
 		9591DDC92C88659700D2DB56 /* RemoteConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */; };
+		95A846BE2C8AA883007CA97F /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846BD2C8AA883007CA97F /* MainViewModel.swift */; };
+		95A846C02C8AA8A4007CA97F /* VerifyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846BF2C8AA8A4007CA97F /* VerifyOptions.swift */; };
+		95A846C22C8AB709007CA97F /* VerifySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C12C8AB708007CA97F /* VerifySource.swift */; };
+		95A846C52C8AE709007CA97F /* CustomVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C42C8AE709007CA97F /* CustomVerificationViewController.swift */; };
+		95A846C72C8AE710007CA97F /* CustomVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C62C8AE710007CA97F /* CustomVerificationViewModel.swift */; };
+		95A846C92C8AF441007CA97F /* CustomVerifyUiFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */; };
 		E27EAC7E274EC2A800336E5C /* ACRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = E27EAC7D274EC2A800336E5C /* ACRemoteConfig */; };
 		E2E5D3D9274EBC5700562431 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E5D3D8274EBC5700562431 /* AppDelegate.swift */; };
 		E2E5D3DB274EBC5700562431 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E5D3DA274EBC5700562431 /* SceneDelegate.swift */; };
@@ -47,6 +53,12 @@
 		9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACRemoteConfigModelProtocol.swift; sourceTree = "<group>"; };
 		9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigModel.swift; sourceTree = "<group>"; };
+		95A846BD2C8AA883007CA97F /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
+		95A846BF2C8AA8A4007CA97F /* VerifyOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyOptions.swift; sourceTree = "<group>"; };
+		95A846C12C8AB708007CA97F /* VerifySource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifySource.swift; sourceTree = "<group>"; };
+		95A846C42C8AE709007CA97F /* CustomVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerificationViewController.swift; sourceTree = "<group>"; };
+		95A846C62C8AE710007CA97F /* CustomVerificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerificationViewModel.swift; sourceTree = "<group>"; };
+		95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerifyUiFactory.swift; sourceTree = "<group>"; };
 		E27EAC7A274EBF7E00336E5C /* ACRemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACRemoteConfig; path = ..; sourceTree = "<group>"; };
 		E27EAC80274EC7A500336E5C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		E2E5D3D5274EBC5700562431 /* ACRemoteConfigDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ACRemoteConfigDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				9591DDBB2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift */,
+				95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */,
 			);
 			path = ServiceLayer;
 			sourceTree = "<group>";
@@ -116,6 +129,7 @@
 		9591DDC52C88657600D2DB56 /* PresentationLayer */ = {
 			isa = PBXGroup;
 			children = (
+				95A846C32C8AE6FE007CA97F /* CustomVerificationScreen */,
 				9591DDCA2C8865C600D2DB56 /* Main */,
 			);
 			path = PresentationLayer;
@@ -126,6 +140,8 @@
 			children = (
 				9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */,
 				9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */,
+				95A846BF2C8AA8A4007CA97F /* VerifyOptions.swift */,
+				95A846C12C8AB708007CA97F /* VerifySource.swift */,
 			);
 			path = DomainLayer;
 			sourceTree = "<group>";
@@ -142,8 +158,18 @@
 			isa = PBXGroup;
 			children = (
 				E2E5D3DC274EBC5700562431 /* MainViewController.swift */,
+				95A846BD2C8AA883007CA97F /* MainViewModel.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		95A846C32C8AE6FE007CA97F /* CustomVerificationScreen */ = {
+			isa = PBXGroup;
+			children = (
+				95A846C42C8AE709007CA97F /* CustomVerificationViewController.swift */,
+				95A846C62C8AE710007CA97F /* CustomVerificationViewModel.swift */,
+			);
+			path = CustomVerificationScreen;
 			sourceTree = "<group>";
 		};
 		E27EAC79274EBF7E00336E5C /* Packages */ = {
@@ -292,12 +318,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95A846BE2C8AA883007CA97F /* MainViewModel.swift in Sources */,
 				E2E5D3DD274EBC5700562431 /* MainViewController.swift in Sources */,
 				9591DDC92C88659700D2DB56 /* RemoteConfigModel.swift in Sources */,
 				9591DDBC2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift in Sources */,
 				E2E5D3D9274EBC5700562431 /* AppDelegate.swift in Sources */,
 				E2E5D3DB274EBC5700562431 /* SceneDelegate.swift in Sources */,
+				95A846C22C8AB709007CA97F /* VerifySource.swift in Sources */,
+				95A846C52C8AE709007CA97F /* CustomVerificationViewController.swift in Sources */,
+				95A846C92C8AF441007CA97F /* CustomVerifyUiFactory.swift in Sources */,
 				9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */,
+				95A846C02C8AA8A4007CA97F /* VerifyOptions.swift in Sources */,
+				95A846C72C8AE710007CA97F /* CustomVerificationViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
