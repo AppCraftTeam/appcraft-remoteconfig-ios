@@ -45,7 +45,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         }
     }
     
-    private func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
+    open func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
         customUIFactory.presentViewController(
             customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
                 didTryAgain?()
@@ -54,7 +54,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         )
     }
     
-    private func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
+    open func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
         customUIFactory.presentViewController(
             customUIFactory.makeIosMinimalVersionAlert(tapOpenStore: {
                 self.openAppInAppStore { _ in
@@ -65,7 +65,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         )
     }
     
-    private func showIosActualVersionAlert(completion: VerifyCompletion?) {
+    open func showIosActualVersionAlert(completion: VerifyCompletion?) {
         customUIFactory.presentViewController(
             customUIFactory.makeIosActualVersionAlert(tapOpenStore: {
                 self.openAppInAppStore { _ in

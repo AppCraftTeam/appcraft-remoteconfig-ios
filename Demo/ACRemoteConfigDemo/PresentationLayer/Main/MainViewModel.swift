@@ -62,9 +62,9 @@ final class MainViewModel {
                 )
                 return result
             case .customHandler:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
+                print("zzz")
+                let result = CustomConfigHandler(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
                 result.viewController = parentScreen
-                result.customUIFactory.style.presentation.size = .percent(value: 1.0)
                 return result
             }
         }
