@@ -8,13 +8,13 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     // MARK: - Props
     open weak var viewController: UIViewController?
     open var style = ACVerifyApplicationAvailabilityStyle()
-    open var configuration: ACDefaultUIConfiguration = .default()
+    open var configuration: ACVerifyConfiguration
     open var customUIFactory: ACVerifyUIFactory
     
     // MARK: - Init
     public init(viewController: UIViewController? = nil,
                 style: ACVerifyApplicationAvailabilityStyle = ACVerifyApplicationAvailabilityStyle(),
-                configuration: ACDefaultUIConfiguration,
+                configuration: ACVerifyConfiguration,
                 customUIFactory: ACVerifyUIFactory? = nil) {
         self.viewController = viewController
         self.style = style
@@ -120,13 +120,12 @@ private extension ACVerifyApplicationAvailability {
     }
     
     func openAppInAppStore(completion: ((Bool) -> Void)?) {
-        #warning("todo add config")
-//        guard let url = self.configuration.urlToAppInAppStore else {
-//            print("[ACVerifyApplicationAvailability] - [openAppUpdate] - urlToAppInAppStore == nil")
-//            completion?(false)
-//            return
-//        }
-//        
-//        UIApplication.shared.open(url, options: [:], completionHandler: completion)
+        guard let url = self.configuration.urlToAppInAppStore else {
+            print("[ACVerifyApplicationAvailability] - [openAppUpdate] - urlToAppInAppStore == nil")
+            completion?(false)
+            return
+        }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: completion)
     }
 }

@@ -9,4 +9,8 @@ import Foundation
 
 public struct ACVerifyConfiguration {
     public var urlToAppInAppStore: URL?
+    
+    public init(urlToAppInAppStore: URL? = nil) {
+        self.urlToAppInAppStore = urlToAppInAppStore
+    }
 }

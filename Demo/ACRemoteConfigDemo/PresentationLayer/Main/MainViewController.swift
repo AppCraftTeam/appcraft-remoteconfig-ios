@@ -15,7 +15,7 @@ class MainViewController: UIViewController {
     }
     
     lazy var verifyApplicationAvailability: ACVerifyApplicationAvailability = {
-        let result = ACVerifyApplicationAvailability(configuration: .default())
+        let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
         result.viewController = self
         result.style.presentation.size = .percent(value: 0.5)
         return result

@@ -10,7 +10,11 @@ import UIKit
 public class ACDefaultUIFactory: ACVerifyUIFactory {
     
     public var style = ACVerifyApplicationAvailabilityStyle()
-    public var configuration: ACDefaultUIConfiguration = .default()
+    public var configuration: ACDefaultUIConfiguration
+    
+    public init(configuration: ACDefaultUIConfiguration = .default()) {
+        self.configuration = configuration
+    }
     
     public func makeTechnicalWorksAlert(tapTryAgain: (() -> Void)?) -> UIViewController {
         let viewController = style.viewControllerFactory.make()
