@@ -30,8 +30,7 @@ final class MainViewModel {
     
     
     func verifyConfig(on parentScreen: UIViewController, configModel: ACRemoteConfig) {
-        print("verifyConfig")
-        print("iOS Actual Version: \(configModel.iosActualVersion)")
+6        print("iOS Actual Version: \(configModel.iosActualVersion)")
         print("iOS Minimal Version: \(configModel.iosMinimalVersion)")
         print("Technical Works: \(configModel.technicalWorks)")
         
@@ -62,7 +61,6 @@ final class MainViewModel {
                 )
                 return result
             case .customHandler:
-                print("zzz")
                 let result = CustomConfigHandler(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
                 result.viewController = parentScreen
                 return result
@@ -72,11 +70,9 @@ final class MainViewModel {
         verifyApplicationAvailability.verify(fromModel: configModel) { verifed in
             guard verifed else { return }
             DispatchQueue.main.async {
-                parentScreen.present(
-                    UIAlertController(title: "App verifed! Show next screen", message: nil, preferredStyle: .alert),
-                    animated: true,
-                    completion: nil
-                )
+                let alert = UIAlertController(title: "App verifed! Allow show next screen", message: nil, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Okay", style: .default) )
+                parentScreen.present(alert, animated: true)
             }
         } didTryAgain: {
             self.checkApplicationAvailability()
@@ -103,7 +99,6 @@ private extension MainViewModel {
     func checkApplicationAvailability() {
         fetchingConfig { config in
             guard let config = config else {
-                print("Failed get config")
                 return
             }
             DispatchQueue.main.async { [weak self] in

@@ -45,7 +45,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     ///   - didTryAgain: Called if the user taps "Try Again"
     open func verify(fromModel model: ACRemoteConfig?, completion: VerifyCompletion?, didTryAgain: (() -> Void)?) {
         guard let model = model else {
-            completion?(true)
+            dismissVerificationAndCompletition()
             return
         }
         
@@ -57,7 +57,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         
         // Check if the app version can be retrieved
         guard let appVersionFull = getAppVersion() else {
-            completion?(true)
+            dismissVerificationAndCompletition()
             return
         }
         
@@ -67,7 +67,17 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         } else if isVersionLower(appVersionFull, than: model.iosActualVersion) {
             showIosActualVersionAlert(completion: completion)
         } else {
-            completion?(true)
+            dismissVerificationAndCompletition()
+        }
+        
+        func dismissVerificationAndCompletition() {
+            if let presentedVc = self.viewController?.topMostViewController() as? ACMessageViewControllerProtocol {
+                presentedVc.dismiss(animated: true) {
+                    completion?(true)
+                }
+            } else {
+                completion?(true)
+            }
         }
     }
     
@@ -75,6 +85,8 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     /// - Parameters:
     ///   - didTryAgain: Called if the user chooses to retry
     open func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
+        let vc = self.viewController?.topMostViewController() as?  ACMessageViewControllerProtocol
+        print("vcvc - \(vc)")
         customUIFactory.presentViewController(
             customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
                 didTryAgain?()
