@@ -1,16 +1,36 @@
 import Foundation
 
+/// The default configuration for the UI related to app availability and verification.
 public struct ACDefaultUIConfiguration {
+    
+    /// Title for the technical works alert
     public var technicalWorksAlertTitle: String?
+    
+    /// Message for the technical works alert
     public var technicalWorksAlertMessage: String?
+    
+    /// Title for the minimal iOS version alert
     public var iosMinimalVersionAlertTitle: String?
+    
+    /// Message for the minimal iOS version alert
     public var iosMinimalVersionAlertMessage: String?
+    
+    /// Title for the iOS actual version alert
     public var iosActualVersionAlertTitle: String?
+    
+    /// Message for the iOS actual version alert
     public var iosActualVersionAlertMessage: String?
+    
+    /// Title for the "try again" button
     public var tryAgainAlertActionTitle: String
+    
+    /// Title for the "continue without updating" button
     public var continueWithoutUpdatingAlertActionTitle: String
+    
+    ///Title for the "update app" button
     public var appUpdateAlertActionTitle: String
     
+    /// Returns the default UI configuration
     public static func `default`() -> ACDefaultUIConfiguration {
         func localized(_ key: String) -> String {
             NSLocalizedString(key, bundle: .module, comment: "")
@@ -28,7 +48,28 @@ public struct ACDefaultUIConfiguration {
         )
     }
     
-    public init(technicalWorksAlertTitle: String? = nil, technicalWorksAlertMessage: String? = nil, iosMinimalVersionAlertTitle: String? = nil, iosMinimalVersionAlertMessage: String? = nil, iosActualVersionAlertTitle: String? = nil, iosActualVersionAlertMessage: String? = nil, tryAgainAlertActionTitle: String, continueWithoutUpdatingAlertActionTitle: String, appUpdateAlertActionTitle: String) {
+    /// Initializes the default UI configuration
+    /// - Parameters:
+    ///   - technicalWorksAlertTitle: Title for the technical works alert
+    ///   - technicalWorksAlertMessage: Message for the technical works alert
+    ///   - iosMinimalVersionAlertTitle: Title for the minimal iOS version alert
+    ///   - iosMinimalVersionAlertMessage: Message for the minimal iOS version alert
+    ///   - iosActualVersionAlertTitle: Title for the iOS actual version alert
+    ///   - iosActualVersionAlertMessage: Message for the iOS actual version alert
+    ///   - tryAgainAlertActionTitle: Title for the "try again" button
+    ///   - continueWithoutUpdatingAlertActionTitle: Title for the "continue without updating" button
+    ///   - appUpdateAlertActionTitle: Title for the "update app" button
+    public init(
+        technicalWorksAlertTitle: String? = nil,
+        technicalWorksAlertMessage: String? = nil,
+        iosMinimalVersionAlertTitle: String? = nil,
+        iosMinimalVersionAlertMessage: String? = nil,
+        iosActualVersionAlertTitle: String? = nil,
+        iosActualVersionAlertMessage: String? = nil,
+        tryAgainAlertActionTitle: String,
+        continueWithoutUpdatingAlertActionTitle: String,
+        appUpdateAlertActionTitle: String
+    ) {
         self.technicalWorksAlertTitle = technicalWorksAlertTitle
         self.technicalWorksAlertMessage = technicalWorksAlertMessage
         self.iosMinimalVersionAlertTitle = iosMinimalVersionAlertTitle

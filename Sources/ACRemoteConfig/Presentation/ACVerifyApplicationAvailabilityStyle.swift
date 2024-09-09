@@ -8,25 +8,26 @@
 import Foundation
 import UIKit
 
+/// Struct to define the styles and presentation model for application availability UI components.
 public struct ACVerifyApplicationAvailabilityStyle {
-    public var presentation: PresentationModel
-    public var viewStyle: Style<ACMessageViewController>?
-
-    public var technicalWorkButtonStyle: Style<UIButton>
-    public var actualVersionAproveButtonStyle: Style<UIButton>
-    public var actualVersionCancelButtonStyle: Style<UIButton>
-
-    public var minimalVersionButtonStyle: Style<UIButton>
+    public var presentation: ACPresentationModel
+    public var viewStyle: ACStyle<ACMessageViewController>?
+    
+    public var technicalWorkButtonStyle: ACStyle<UIButton>
+    public var actualVersionAproveButtonStyle: ACStyle<UIButton>
+    public var actualVersionCancelButtonStyle: ACStyle<UIButton>
+    public var minimalVersionButtonStyle: ACStyle<UIButton>
     
     public var viewControllerFactory: ACMessageViewControllerFactory = DefaultMessageViewControllerFactory()
     
+    /// Initializes the struct with default styles for buttons and presentation.
     public init(
-        presentation: PresentationModel = .default,
-        viewStyle: Style<ACMessageViewController> = .default,
-        technicalWorkButtonStyle: Style<UIButton> = .default,
-        minimalVersionButtonStyle: Style<UIButton> = .default,
-        actualVersionAproveButtonStyle: Style<UIButton> = .default,
-        actualVersionCancelButtonStyle: Style<UIButton> = .cancel
+        presentation: ACPresentationModel = .default,
+        viewStyle: ACStyle<ACMessageViewController> = .default,
+        technicalWorkButtonStyle: ACStyle<UIButton> = .default,
+        minimalVersionButtonStyle: ACStyle<UIButton> = .default,
+        actualVersionAproveButtonStyle: ACStyle<UIButton> = .default,
+        actualVersionCancelButtonStyle: ACStyle<UIButton> = .cancel
     ) {
         self.viewStyle = viewStyle
         self.presentation = presentation
@@ -34,30 +35,5 @@ public struct ACVerifyApplicationAvailabilityStyle {
         self.minimalVersionButtonStyle = minimalVersionButtonStyle
         self.actualVersionAproveButtonStyle = actualVersionAproveButtonStyle
         self.actualVersionCancelButtonStyle = actualVersionCancelButtonStyle
-    }
-}
-
-public struct PresentationModel {
-    public var cornerRadius: CGFloat
-    public var animationDuration: TimeInterval
-    public var size: ACPresentationControllerSize
-    public var backgroundFactory: ACCustomPresentationBackgroundFactory
-    
-    public static var `default`: PresentationModel {
-        .init(
-            cornerRadius: 16,
-            animationDuration: 0.25,
-            size: .percent(value: 0.5),
-            backgroundFactory: BSDimmBackgroundViewFactory()
-        )
-    }
-    
-    public func makeDelegate() -> ACTransitionDelegate {
-        ACTransitionDelegate(
-            cornerRadius: cornerRadius,
-            animationDuration: animationDuration,
-            size: size,
-            backgroundFactory: backgroundFactory
-        )
     }
 }

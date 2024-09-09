@@ -46,7 +46,7 @@ final class MainViewModel {
                 let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
                 result.viewController = parentScreen
                 result.customUIFactory.style.presentation.size = .percent(value: 0.5)
-                result.customUIFactory.style.technicalWorkButtonStyle = Style<UIButton>(make: { button in
+                result.customUIFactory.style.technicalWorkButtonStyle = ACStyle<UIButton>(make: { button in
                     button.backgroundColor = .systemBlue
                     button.setTitleColor(.white, for: [])
                     button.layer.cornerRadius = 10
