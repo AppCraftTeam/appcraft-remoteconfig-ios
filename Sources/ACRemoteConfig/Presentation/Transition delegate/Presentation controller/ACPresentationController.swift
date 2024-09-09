@@ -9,15 +9,21 @@
 import UIKit
 import CoreGraphics
 
+/// A custom presentation controller that manages the layout and appearance of the presented view controller
 class ACPresentationController: UIPresentationController {
     
+    /// The corner radius applied to the top corners of the presented view
     var cornerRadius: CGFloat = 0.0
+    
+    /// Defines the size of the presented view
     var size: ACPresentationControllerSize = .percent(value: 1.0)
     
+    /// Indicates whether the presented view should be in fullscreen
     override var shouldPresentInFullscreen: Bool {
         false
     }
     
+    /// Calculates and returns the frame of the presented view within the container view
     override var frameOfPresentedViewInContainerView: CGRect {
         guard let bounds = containerView?.bounds else {
             return .zero
@@ -39,6 +45,7 @@ class ACPresentationController: UIPresentationController {
         }
     }
     
+    /// Called when the presentation transition is about to begin
     override func presentationTransitionWillBegin() {
         super.presentationTransitionWillBegin()
         guard let presentedView = presentedView else {
@@ -47,6 +54,7 @@ class ACPresentationController: UIPresentationController {
         self.containerView?.addSubview(presentedView)
     }
     
+    /// Adjusts the layout of the presented view when the container view's bounds change
     override func containerViewDidLayoutSubviews() {
         super.containerViewDidLayoutSubviews()
         self.presentedView?.frame = frameOfPresentedViewInContainerView
@@ -59,15 +67,13 @@ class ACPresentationController: UIPresentationController {
         }
     }
     
-    
+    /// Initializes the presentation controller
     override init(presentedViewController: UIViewController, presenting: UIViewController?) {
         super.init(presentedViewController: presentedViewController, presenting: presenting)
     }
     
+    /// Called after the presentation transition completes
     override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
-        
     }
 }
-
-

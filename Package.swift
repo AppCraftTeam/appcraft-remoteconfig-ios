@@ -16,22 +16,11 @@ let package = Package(
             targets: ["ACRemoteConfig"]
         ),
     ],
-    dependencies: [
-        .package(
-            name: "Firebase",
-            url: "https://github.com/firebase/firebase-ios-sdk.git",
-            from: "8.0.0"
-        )
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "ACRemoteConfig",
-            dependencies: [
-                .product(
-                    name: "FirebaseRemoteConfig",
-                    package: "Firebase"
-                )
-            ],
+            dependencies: [],
             path: "Sources",
             resources: [.process("Localization")]
         )

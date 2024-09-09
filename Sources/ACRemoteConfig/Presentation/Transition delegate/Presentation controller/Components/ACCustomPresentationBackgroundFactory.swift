@@ -8,6 +8,9 @@
 
 import UIKit
 
+/// A protocol for creating a custom background view
 public protocol ACCustomPresentationBackgroundFactory {
+    
+    /// Creates and returns the background view
     func backgroundView() -> UIView
 }

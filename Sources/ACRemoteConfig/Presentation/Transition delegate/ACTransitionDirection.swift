@@ -6,9 +6,10 @@
 //  Copyright © 2024 AppCraft. All rights reserved.
 //
 
-
-import Foundation
-
+/// Direction of the transition
 enum ACTransitionDirection {
-    case present, dismiss
+    /// Presenting
+    case present
+    /// dismissing
+    case dismiss
 }
