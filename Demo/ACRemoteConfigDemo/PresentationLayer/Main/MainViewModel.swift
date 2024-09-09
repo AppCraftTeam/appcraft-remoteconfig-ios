@@ -20,14 +20,12 @@ final class MainViewModel {
     init() {
         currentOption = .defaultScreen
         currentSource = .firebase
-        // startObserver()
     }
     
     func handleOption(_ option: VerifyOptions) {
         self.currentOption = option
         self.checkApplicationAvailability()
     }
-    
     
     func verifyConfig(on parentScreen: UIViewController, configModel: ACRemoteConfig) {
         print("iOS Actual Version: \(configModel.iosActualVersion)")

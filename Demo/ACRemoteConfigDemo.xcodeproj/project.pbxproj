@@ -120,7 +120,6 @@
 		9591DDC42C88656E00D2DB56 /* SupportLayer */ = {
 			isa = PBXGroup;
 			children = (
-				E2E5D3D8274EBC5700562431 /* AppDelegate.swift */,
 				E2E5D3DA274EBC5700562431 /* SceneDelegate.swift */,
 				9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */,
 				E2E5D3E6274EBC5900562431 /* Info.plist */,
@@ -152,6 +151,7 @@
 		9591DDC72C88658300D2DB56 /* ApplicationLayer */ = {
 			isa = PBXGroup;
 			children = (
+				E2E5D3D8274EBC5700562431 /* AppDelegate.swift */,
 				E2E5D3E1274EBC5900562431 /* Assets.xcassets */,
 			);
 			path = ApplicationLayer;
