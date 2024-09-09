@@ -85,8 +85,6 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     /// - Parameters:
     ///   - didTryAgain: Called if the user chooses to retry
     open func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
-        let vc = self.viewController?.topMostViewController() as?  ACMessageViewControllerProtocol
-        print("vcvc - \(vc)")
         customUIFactory.presentViewController(
             customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
                 didTryAgain?()

@@ -30,7 +30,7 @@ final class MainViewModel {
     
     
     func verifyConfig(on parentScreen: UIViewController, configModel: ACRemoteConfig) {
-6        print("iOS Actual Version: \(configModel.iosActualVersion)")
+        print("iOS Actual Version: \(configModel.iosActualVersion)")
         print("iOS Minimal Version: \(configModel.iosMinimalVersion)")
         print("Technical Works: \(configModel.technicalWorks)")
         
