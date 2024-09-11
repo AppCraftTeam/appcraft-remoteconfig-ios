@@ -35,11 +35,11 @@ final class MainViewModel {
         var verifyApplicationAvailability: ACVerifyApplicationAvailability {
             switch self.currentOption {
             case .defaultScreen:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
+                let result = ACVerifyApplicationAvailability()
                 result.viewController = parentScreen
                 return result
             case .defaultScreenWithOptions:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
+                let result = ACVerifyApplicationAvailability()
                 result.viewController = parentScreen
 //                result.customUIFactory.style.technicalWorkButtonStyle = ACStyle<UIButton>(make: { button in
 //                    button.backgroundColor = .systemBlue
@@ -49,7 +49,7 @@ final class MainViewModel {
 
                 return result
             case .customScreen:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
+                let result = ACVerifyApplicationAvailability()
                 result.viewController = parentScreen
                 result.customUIFactory = CustomVerifyUiFactory(
                     minAppVersion: configModel.iosMinimalVersion,
@@ -57,7 +57,7 @@ final class MainViewModel {
                 )
                 return result
             case .customHandler:
-                let result = CustomConfigHandler(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
+                let result = CustomConfigHandler()
                 result.viewController = parentScreen
                 return result
             }

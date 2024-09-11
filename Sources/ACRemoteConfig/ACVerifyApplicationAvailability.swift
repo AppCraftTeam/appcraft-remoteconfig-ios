@@ -13,8 +13,8 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     /// Parent view controller from screen will be presented
     open weak var viewController: UIViewController?
     
-    /// Configuration settings
-    open var configuration: ACVerifyConfiguration
+    /// URL for open app page in App Store
+    open var urlToAppInAppStore: URL?
     
     /// A custom factory for creating screen
     open var customUIFactory: ACVerifyUIFactory
@@ -24,17 +24,21 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     /// Initializes the verifier
     /// - Parameters:
     ///   - viewController: The parent view controller from screens will be presented
-    ///   - style: The style configuration
-    ///   - configuration: The configuration object
+    ///   - urlToAppInAppStore: URL for open app page in App Store
     ///   - customUIFactory: A custom factory for creating screen
     public init(
         viewController: UIViewController? = nil,
-        configuration: ACVerifyConfiguration,
+        urlToAppInAppStore: URL? = nil,
         customUIFactory: ACVerifyUIFactory? = nil
     ) {
         self.viewController = viewController
-        self.configuration = configuration
-        self.customUIFactory = customUIFactory ?? ACMessageViewControllerFactory(viewModel: ACMessageViewModel(actions: [], localeConfiguration: .default()))
+        self.urlToAppInAppStore = urlToAppInAppStore
+        self.customUIFactory = customUIFactory ?? ACMessageViewControllerFactory(
+            viewModel: ACMessageViewModel(
+                actions: [],
+                localeConfiguration: .default()
+            )
+        )
     }
     
     /// Performs the verification process
@@ -44,87 +48,59 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     ///   - didTryAgain: Called if the user taps "Try Again"
     open func verify(fromModel model: ACRemoteConfig?, completion: VerifyCompletion?, didTryAgain: (() -> Void)?) {
         guard let model = model else {
-            dismissVerificationAndCompletition()
+            completeVerification(completion)
             return
         }
         
-        // Show technical works alert if the server is under maintenance
         if model.technicalWorks {
-            showTechnicalWorksAlert(didTryAgain: didTryAgain, completion: completion)
-            return
-        }
-        
-        // Check if the app version can be retrieved
-        guard let appVersionFull = getAppVersion() else {
-            dismissVerificationAndCompletition()
-            return
-        }
-        
-        // Show alerts based on the version check
-        if isVersionLower(appVersionFull, than: model.iosMinimalVersion) {
-            showIosMinimalVersionAlert(completion: completion)
-        } else if isVersionLower(appVersionFull, than: model.iosActualVersion) {
-            showIosActualVersionAlert(completion: completion)
-        } else {
-            dismissVerificationAndCompletition()
-        }
-        
-        func dismissVerificationAndCompletition() {
-            if let presentedVc = self.viewController?.topMostViewController() as? ACMessageViewControllerProtocol {
-                presentedVc.dismiss(animated: true) {
-                    completion?(true)
-                }
-            } else {
-                completion?(true)
-            }
-        }
-    }
-    
-    /// Shows an alert indicating the app is undergoing technical maintenance
-    /// - Parameters:
-    ///   - didTryAgain: Called if the user chooses to retry
-    open func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
-        customUIFactory.presentViewController(
-            customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
+            // Show technical works alert if the server is under maintenance
+            presentAlert(makeAlert: customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
                 didTryAgain?()
                 completion?(false)
-            }), from: self.viewController
-        )
+            }), completion: completion)
+        } else if let appVersion = getAppVersion() {
+            // Check if the app version can be retrieved
+            checkVersion(appVersion, model: model, completion: completion)
+        } else {
+            completeVerification(completion)
+        }
     }
     
-    /// Shows an alert prompting the user to update the app to the minimum required version
-    open func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
-        customUIFactory.presentViewController(
-            customUIFactory.makeIosMinimalVersionAlert(tapOpenStore: {
-                self.openAppInAppStore { _ in
-                    completion?(false)
-                }
-            }),
-            from: self.viewController
-        )
+    /// Check app version and show the appropriate alert
+    private func checkVersion(_ appVersion: String, model: ACRemoteConfig, completion: VerifyCompletion?) {
+        if isVersionLower(appVersion, than: model.iosMinimalVersion) {
+            presentAlert(
+                makeAlert: customUIFactory.makeIosMinimalVersionAlert {
+                    self.openAppInAppStore { isSuccess in
+                        completion?(isSuccess)
+                    }
+                },
+                completion: completion
+            )
+        } else if isVersionLower(appVersion, than: model.iosActualVersion) {
+            presentAlert(
+                makeAlert: customUIFactory.makeIosActualVersionAlert(
+                    tapOpenStore: {
+                        self.openAppInAppStore { isSuccess in
+                            completion?(false)
+                        }
+                    },
+                    tapContinueWithoutUpdating: {
+                        self.viewController?.topMostViewController().dismiss(animated: true)
+                        completion?(true)
+                    }
+                ),
+                completion: completion
+            )
+        } else {
+            completeVerification(completion)
+        }
     }
     
-    /// Shows an alert informing the user that an update is available
-    open func showIosActualVersionAlert(completion: VerifyCompletion?) {
-        customUIFactory.presentViewController(
-            customUIFactory.makeIosActualVersionAlert(tapOpenStore: {
-                self.openAppInAppStore { _ in
-                    completion?(false)
-                }
-            }, tapContinueWithoutUpdating: { [weak viewController] in
-                viewController?.dismiss(animated: true)
-                completion?(true)
-            }),
-            from: self.viewController
-        )
-    }
-}
-
-// MARK: - Version Helper
-private extension ACVerifyApplicationAvailability {
+    // MARK: - Version Helper
     
     /// Retrieves the app's version and build number from the Info.plist.
-    func getAppVersion() -> String? {
+    open func getAppVersion() -> String? {
         guard
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
             let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
@@ -139,22 +115,36 @@ private extension ACVerifyApplicationAvailability {
     ///   - currentVersion: The current app version
     ///   - requiredVersion: The required app version
     /// - Returns: `true` if the current version is lower than the required version
-    func isVersionLower(_ currentVersion: String, than requiredVersion: String) -> Bool {
-        return currentVersion.compare(requiredVersion, options: .numeric) == .orderedAscending
+    open func isVersionLower(_ currentVersion: String, than requiredVersion: String) -> Bool {
+        currentVersion.compare(requiredVersion, options: .numeric) == .orderedAscending
     }
-}
-
-// MARK: - App Store Helpers
-private extension ACVerifyApplicationAvailability {
+    
+    // MARK: - App Store Helpers
     
     /// Open App Store to the app page
-    func openAppInAppStore(completion: ((Bool) -> Void)?) {
-        guard let url = self.configuration.urlToAppInAppStore else {
+    open func openAppInAppStore(completion: ((Bool) -> Void)?) {
+        guard let url = self.urlToAppInAppStore else {
             print("[ACVerifyApplicationAvailability] - [openAppUpdate] - urlToAppInAppStore == nil")
             completion?(false)
             return
         }
         
         UIApplication.shared.open(url, options: [:], completionHandler: completion)
+    }
+
+    /// Presents a view controller for an alert
+    open func presentAlert(makeAlert: UIViewController, completion: VerifyCompletion?) {
+        customUIFactory.presentViewController(makeAlert, from: viewController)
+    }
+    
+    /// Completes the verification process
+    open func completeVerification(_ completion: VerifyCompletion?) {
+        if let presentedVc = viewController?.topMostViewController() as? ACMessageViewControllerProtocol {
+            presentedVc.dismiss(animated: true) {
+                completion?(true)
+            }
+        } else {
+            completion?(true)
+        }
     }
 }
