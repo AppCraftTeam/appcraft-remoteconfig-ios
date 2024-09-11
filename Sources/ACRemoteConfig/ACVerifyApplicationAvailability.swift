@@ -29,13 +29,12 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     ///   - customUIFactory: A custom factory for creating screen
     public init(
         viewController: UIViewController? = nil,
-        style: ACVerifyApplicationAvailabilityStyle = ACVerifyApplicationAvailabilityStyle(),
         configuration: ACVerifyConfiguration,
         customUIFactory: ACVerifyUIFactory? = nil
     ) {
         self.viewController = viewController
         self.configuration = configuration
-        self.customUIFactory = customUIFactory ?? ACDefaultUIFactory(style: style)
+        self.customUIFactory = customUIFactory ?? ACMessageViewControllerFactory(viewModel: ACMessageViewModel(actions: [], localeConfiguration: .default()))
     }
     
     /// Performs the verification process

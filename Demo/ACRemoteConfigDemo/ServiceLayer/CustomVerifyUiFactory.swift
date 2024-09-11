@@ -10,17 +10,13 @@ import UIKit
 
 final class CustomVerifyUiFactory: ACVerifyUIFactory {
     
-    public var style = ACVerifyApplicationAvailabilityStyle()
-    public var configuration: ACDefaultUIConfiguration
     public var minAppVersion: String
     public var actualAppVersion: String
 
     public init(
-        configuration: ACDefaultUIConfiguration = .default(),
         minAppVersion: String = "",
         actualAppVersion: String = ""
     ) {
-        self.configuration = configuration
         self.minAppVersion = minAppVersion
         self.actualAppVersion = actualAppVersion
     }

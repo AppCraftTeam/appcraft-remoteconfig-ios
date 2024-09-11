@@ -10,10 +10,7 @@ import UIKit
 
 /// Protocol defining the UI factory for generating screens for verification process
 public protocol ACVerifyUIFactory {
-    
-    /// The style to be applied to the UI components
-    var style: ACVerifyApplicationAvailabilityStyle { get set }
-    
+
     /// Creates a technical works screen
     /// - Parameter tapTryAgain: The action to perform when the user taps the "Try Again" button
     func makeTechnicalWorksAlert(tapTryAgain: (() -> Void)?) -> UIViewController

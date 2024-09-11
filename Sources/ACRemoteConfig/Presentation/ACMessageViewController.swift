@@ -28,11 +28,18 @@ public protocol ACMessageViewControllerProtocol: UIViewController {
 // A customizable message view controller that conforms to `ACMessageViewControllerProtocol
 open class ACMessageViewController: UIViewController, ACMessageViewControllerProtocol {
     
+    public var model: ACMessageViewModel?
+    
+    
     // A button action with a text, style, and tap closure.
     public struct ActionModel {
         let text: String
-        let style: ACStyle<UIButton>
         let action: () -> Void
+        
+        public init(text: String, action: @escaping () -> Void) {
+            self.text = text
+            self.action = action
+        }
     }
     
     // Enum to define where the message content should be displayed
@@ -69,12 +76,6 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         set { titleLabel.text = newValue }
     }
     
-    // Style for the title label
-    public var titleLabelStyle = ACStyle<UILabel>(make: { label in
-        label.font = .systemFont(ofSize: 24, weight: .semibold)
-        label.textColor = if #available(iOS 13, *) { .label } else { .black }
-    })
-    
     // Subtitle text
     public var subtitleText: String {
         get { subtitleLabel.text ?? "" }
@@ -83,14 +84,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
             self.setupSubtitleLabel()
         }
     }
-    
-    // Style for the subtitle label
-    public var subTitleLabelStyle = ACStyle<UILabel>(make: { label in
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = if #available(iOS 13, *) { .label } else { .black }
-        label.numberOfLines = 0
-    })
-    
+
     // Icon image view
     public private(set) var imageView = UIImageView()
     
@@ -110,15 +104,16 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     }
     
     // Controls the message components position
-    public var messagePosition: MessagePosition = .top {
+    public var messagePosition: ACMessageViewController.MessagePosition = .top {
         didSet {
             self.setupComponents()
         }
     }
-    
+        
     open override func viewDidLoad() {
         super.viewDidLoad()
         self.setupComponents()
+        self.addActions(model?.actions ?? [])
     }
     
     // Sets up the UI components
@@ -140,8 +135,13 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
             actionsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
         ])
-        self.titleLabelStyle.make(titleLabel)
-        self.subTitleLabelStyle.make(subtitleLabel)
+        
+        titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        titleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        
+        subtitleLabel.font = .systemFont(ofSize: 16)
+        subtitleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        subtitleLabel.numberOfLines = 0
         
         switch messagePosition {
         case .top:
@@ -161,14 +161,20 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     }
     
     // Adds an array of action buttons to the stack view
-    open func addActions(_ actions: [ActionModel]) {
-        for action in actions {
-            let button = ActionButton()
+    open func addActions(_ actions: [ACMessageViewController.ActionModel]) {
+        model?.actions = actions
+        for (index, action) in actions.enumerated() {
+            let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
             button.heightAnchor.constraint(equalToConstant: 40).isActive = true
             button.setTitle(action.text, for: .normal)
-            button.onAction = action.action
-            action.style.make(button)
+            if #available(iOS 13.0, *) {
+                button.setTitleColor(.label, for: [])
+            } else {
+                button.setTitleColor(.black, for: [])
+            }
+            button.tag = index
+            button.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
             self.actionsStackView.addArrangedSubview(button)
         }
     }
@@ -211,6 +217,14 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     // Add an array of subviews to the view.
     func addSubviews(_ subviews: [UIView]) {
         subviews.forEach({ self.view.addSubview($0) })
+    }
+    
+    
+    @objc
+    private func buttonTapped(_ sender: UIButton) {
+        if ((model?.actions.indices.contains(sender.tag)) != nil) {
+            model?.actions[sender.tag].action()
+        }
     }
 }
 

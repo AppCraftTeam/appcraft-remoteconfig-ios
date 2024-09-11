@@ -37,17 +37,15 @@ final class MainViewModel {
             case .defaultScreen:
                 let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
                 result.viewController = parentScreen
-                result.customUIFactory.style.presentation.size = .percent(value: 1.0)
                 return result
             case .defaultScreenWithOptions:
                 let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
                 result.viewController = parentScreen
-                result.customUIFactory.style.presentation.size = .percent(value: 0.5)
-                result.customUIFactory.style.technicalWorkButtonStyle = ACStyle<UIButton>(make: { button in
-                    button.backgroundColor = .systemBlue
-                    button.setTitleColor(.white, for: [])
-                    button.layer.cornerRadius = 10
-                })
+//                result.customUIFactory.style.technicalWorkButtonStyle = ACStyle<UIButton>(make: { button in
+//                    button.backgroundColor = .systemBlue
+//                    button.setTitleColor(.white, for: [])
+//                    button.layer.cornerRadius = 10
+//                })
 
                 return result
             case .customScreen:
