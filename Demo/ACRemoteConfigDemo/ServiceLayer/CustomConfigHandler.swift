@@ -45,7 +45,7 @@ open class CustomConfigHandler: ACVerifyApplicationAvailability {
             
             alert.addAction(tryAgainAction)
             
-            viewController?.present(alert, animated: true, completion: nil)
+            parentViewController?.present(alert, animated: true, completion: nil)
         }
     }
     
@@ -64,7 +64,7 @@ open class CustomConfigHandler: ACVerifyApplicationAvailability {
             
             alert.addAction(tryAgainAction)
             
-            viewController?.present(alert, animated: true, completion: nil)
+            parentViewController?.present(alert, animated: true, completion: nil)
         }
     }
 }

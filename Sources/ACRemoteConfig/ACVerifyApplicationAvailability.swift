@@ -11,34 +11,29 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     // MARK: - Properties
     
     /// Parent view controller from screen will be presented
-    open weak var viewController: UIViewController?
+    open weak var parentViewController: UIViewController?
     
     /// URL for open app page in App Store
     open var urlToAppInAppStore: URL?
     
-    /// A custom factory for creating screen
-    open var customUIFactory: ACVerifyUIFactory
+    /// A factory for creating screen
+    open var viewControllerFactory: ACVerifyViewControllerFactory
     
     // MARK: - Initialization
     
     /// Initializes the verifier
     /// - Parameters:
-    ///   - viewController: The parent view controller from screens will be presented
+    ///   - parentViewController: The parent view controller from screens will be presented
     ///   - urlToAppInAppStore: URL for open app page in App Store
-    ///   - customUIFactory: A custom factory for creating screen
+    ///   - viewControllerFactory: A factory for creating screen
     public init(
-        viewController: UIViewController? = nil,
+        parentViewController: UIViewController? = nil,
         urlToAppInAppStore: URL? = nil,
-        customUIFactory: ACVerifyUIFactory? = nil
+        viewControllerFactory: ACVerifyViewControllerFactory = ACMessageViewControllerFactory.make()
     ) {
-        self.viewController = viewController
+        self.parentViewController = parentViewController
         self.urlToAppInAppStore = urlToAppInAppStore
-        self.customUIFactory = customUIFactory ?? ACMessageViewControllerFactory(
-            viewModel: ACMessageViewModel(
-                actions: [],
-                localeConfiguration: .default()
-            )
-        )
+        self.viewControllerFactory = viewControllerFactory
     }
     
     /// Performs the verification process
@@ -54,7 +49,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         
         if model.technicalWorks {
             // Show technical works alert if the server is under maintenance
-            presentAlert(makeAlert: customUIFactory.makeTechnicalWorksAlert(tapTryAgain: {
+            presentAlert(makeAlert: viewControllerFactory.makeTechnicalWorksAlert(tapTryAgain: {
                 didTryAgain?()
                 completion?(false)
             }), completion: completion)
@@ -70,7 +65,7 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
     private func checkVersion(_ appVersion: String, model: ACRemoteConfig, completion: VerifyCompletion?) {
         if isVersionLower(appVersion, than: model.iosMinimalVersion) {
             presentAlert(
-                makeAlert: customUIFactory.makeIosMinimalVersionAlert {
+                makeAlert: viewControllerFactory.makeIosMinimalVersionAlert {
                     self.openAppInAppStore { isSuccess in
                         completion?(isSuccess)
                     }
@@ -79,14 +74,14 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
             )
         } else if isVersionLower(appVersion, than: model.iosActualVersion) {
             presentAlert(
-                makeAlert: customUIFactory.makeIosActualVersionAlert(
+                makeAlert: viewControllerFactory.makeIosActualVersionAlert(
                     tapOpenStore: {
                         self.openAppInAppStore { isSuccess in
                             completion?(false)
                         }
                     },
                     tapContinueWithoutUpdating: {
-                        self.viewController?.topMostViewController().dismiss(animated: true)
+                        self.parentViewController?.topMostViewController().dismiss(animated: true)
                         completion?(true)
                     }
                 ),
@@ -131,15 +126,15 @@ open class ACVerifyApplicationAvailability: ACVerifyHandler {
         
         UIApplication.shared.open(url, options: [:], completionHandler: completion)
     }
-
+    
     /// Presents a view controller for an alert
     open func presentAlert(makeAlert: UIViewController, completion: VerifyCompletion?) {
-        customUIFactory.presentViewController(makeAlert, from: viewController)
+        viewControllerFactory.presentViewController(makeAlert, from: parentViewController)
     }
     
     /// Completes the verification process
     open func completeVerification(_ completion: VerifyCompletion?) {
-        if let presentedVc = viewController?.topMostViewController() as? ACMessageViewControllerProtocol {
+        if let presentedVc = parentViewController?.topMostViewController() as? ACMessageViewControllerProtocol {
             presentedVc.dismiss(animated: true) {
                 completion?(true)
             }

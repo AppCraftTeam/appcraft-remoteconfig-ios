@@ -7,31 +7,20 @@
 //
 
 import UIKit
-
-// Protocol defining the required interface for a message view controller
 public protocol ACMessageViewControllerProtocol: UIViewController {
-    // The image that can be displayed in the view
     var image: UIImage? { get set }
-    
-    // The main title text of the view
     var titleText: String { get set }
-    
-    // The subtitle text of the view
     var subtitleText: String { get set }
     
-    // Add action buttons to the view controller
-    // Parameters:
-    // - actions: An array of button actions
     func addActions(_ actions: [ACMessageViewController.ActionModel])
 }
 
-// A customizable message view controller that conforms to `ACMessageViewControllerProtocol
 open class ACMessageViewController: UIViewController, ACMessageViewControllerProtocol {
     
     public var model: ACMessageViewModel?
+    public var actions: [ActionModel] = []
     
-    
-    // A button action with a text, style, and tap closure.
+    // Action button model
     public struct ActionModel {
         let text: String
         let action: () -> Void
@@ -42,7 +31,6 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         }
     }
     
-    // Enum to define where the message content should be displayed
     public enum MessagePosition {
         case top, center
     }
@@ -80,11 +68,11 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     public var subtitleText: String {
         get { subtitleLabel.text ?? "" }
         set {
-            self.subtitleLabel.text = newValue
-            self.setupSubtitleLabel()
+            subtitleLabel.text = newValue
+            setupSubtitleLabel()
         }
     }
-
+    
     // Icon image view
     public private(set) var imageView = UIImageView()
     
@@ -92,77 +80,78 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     open var image: UIImage? {
         get { imageView.image }
         set {
-            self.imageView.image = newValue
-            self.setupImageView()
+            imageView.image = newValue
+            setupImageView()
         }
     }
     
-    // Configure the spacing between the content stack view elements.
     public var contentSpacing: CGFloat {
         get { contentStackView.spacing }
         set { contentStackView.spacing = newValue }
     }
     
-    // Controls the message components position
-    public var messagePosition: ACMessageViewController.MessagePosition = .top {
-        didSet {
-            self.setupComponents()
-        }
-    }
-        
-    open override func viewDidLoad() {
-        super.viewDidLoad()
-        self.setupComponents()
-        self.addActions(model?.actions ?? [])
+    public var messagePosition: MessagePosition = .top {
+        didSet { setupComponents() }
     }
     
-    // Sets up the UI components
-    func setupComponents() {
-        self.view.backgroundColor = .white
-        self.contentStackView.removeFromSuperview()
-        self.actionsStackView.removeFromSuperview()
-        
-        self.addSubviews([contentStackView, actionsStackView])
-        self.contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.actionsStackView.translatesAutoresizingMaskIntoConstraints = false
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        setupComponents()
+    }
+    
+    // MARK: - Setup Methods
+    
+    private func setupComponents() {
+        decorate()
+        removeSubviews([contentStackView, actionsStackView])
+        addSubviews([contentStackView, actionsStackView])
         
         NSLayoutConstraint.activate([
             contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             contentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            contentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 20),
-            
             actionsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             actionsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
-        
-        titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
-        titleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
-        
-        subtitleLabel.font = .systemFont(ofSize: 16)
-        subtitleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
-        subtitleLabel.numberOfLines = 0
         
         switch messagePosition {
         case .top:
-            NSLayoutConstraint.activate([
-                contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            ])
+            contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         case .center:
-            NSLayoutConstraint.activate([
-                contentStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
+            contentStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         }
     }
     
-    // Removes all action buttons
-    func removeAllAction() {
-        self.actionsStackView.removeAllArrangedSubviews()
+    private func setupSubtitleLabel() {
+        if subtitleText.isEmpty {
+            removeSubviews([subtitleLabel])
+        } else if subtitleLabel.superview == nil {
+            contentStackView.addArrangedSubview(subtitleLabel)
+        }
     }
     
-    // Adds an array of action buttons to the stack view
-    open func addActions(_ actions: [ACMessageViewController.ActionModel]) {
-        model?.actions = actions
+    private func setupImageView() {
+        if let image = imageView.image {
+            if imageView.superview == nil {
+                view.addSubview(imageView)
+                imageView.translatesAutoresizingMaskIntoConstraints = false
+                
+                NSLayoutConstraint.activate([
+                    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
+                    imageView.topAnchor.constraint(greaterThanOrEqualTo: contentStackView.bottomAnchor, constant: 16),
+                    imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+                    imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                    imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+                ])
+            }
+        } else {
+            removeSubviews([imageView])
+        }
+    }
+    
+    open func addActions(_ actions: [ActionModel]) {
+        removeAllAction()
+        self.actions = actions
         for (index, action) in actions.enumerated() {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -175,63 +164,37 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
             }
             button.tag = index
             button.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
+            
             self.actionsStackView.addArrangedSubview(button)
         }
     }
     
-    // MARK: - Setup methods
-    
-    // Configures the subtitle label
-    open func setupSubtitleLabel() {
-        if subtitleText.isEmpty {
-            self.subtitleLabel.removeFromSuperview()
-            self.contentStackView.removeArrangedSubview(subtitleLabel)
-        } else {
-            if subtitleLabel.superview == nil {
-                self.contentStackView.addArrangedSubview(subtitleLabel)
-            }
-        }
+    private func removeSubviews(_ subviews: [UIView]) {
+        subviews.forEach { $0.removeFromSuperview() }
     }
     
-    // Configures the image view
-    open func setupImageView() {
-        if image == nil {
-            self.imageView.removeFromSuperview()
-        } else {
-            if imageView.superview == nil {
-                self.view.addSubview(imageView)
-                self.imageView.translatesAutoresizingMaskIntoConstraints = false
-                
-                NSLayoutConstraint.activate([
-                    imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
-                    imageView.topAnchor.constraint(greaterThanOrEqualTo: contentStackView.bottomAnchor, constant: 16),
-                    imageView.bottomAnchor.constraint(lessThanOrEqualTo: actionsStackView.topAnchor, constant: -16),
-                    imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                    imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                    imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-                ])
-            }
-        }
+    private func removeAllAction() {
+        actionsStackView.removeAllArrangedSubviews()
     }
     
-    // Add an array of subviews to the view.
-    func addSubviews(_ subviews: [UIView]) {
-        subviews.forEach({ self.view.addSubview($0) })
+    open func decorate() {
+        view.backgroundColor = .white
     }
-    
     
     @objc
     private func buttonTapped(_ sender: UIButton) {
-        if ((model?.actions.indices.contains(sender.tag)) != nil) {
-            model?.actions[sender.tag].action()
+        if actions.indices.contains(sender.tag) {
+            actions[sender.tag].action()
         }
+    }
+    
+    private func addSubviews(_ subviews: [UIView]) {
+        subviews.forEach({ self.view.addSubview($0) })
     }
 }
 
 private extension UIStackView {
     func removeAllArrangedSubviews() {
-        for subview in self.arrangedSubviews {
-            subview.removeFromSuperview()
-        }
+        arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
 }

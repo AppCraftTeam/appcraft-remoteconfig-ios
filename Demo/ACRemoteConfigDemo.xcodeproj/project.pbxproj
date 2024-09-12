@@ -34,12 +34,13 @@
 		9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */; };
 		9591DDC22C885E2600D2DB56 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */; };
 		9591DDC92C88659700D2DB56 /* RemoteConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */; };
+		9594F9792C92F0F50007763D /* CustomMesageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9594F9782C92F0F50007763D /* CustomMesageViewController.swift */; };
 		95A846BE2C8AA883007CA97F /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846BD2C8AA883007CA97F /* MainViewModel.swift */; };
 		95A846C02C8AA8A4007CA97F /* VerifyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846BF2C8AA8A4007CA97F /* VerifyOptions.swift */; };
 		95A846C22C8AB709007CA97F /* VerifySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C12C8AB708007CA97F /* VerifySource.swift */; };
 		95A846C52C8AE709007CA97F /* CustomVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C42C8AE709007CA97F /* CustomVerificationViewController.swift */; };
 		95A846C72C8AE710007CA97F /* CustomVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C62C8AE710007CA97F /* CustomVerificationViewModel.swift */; };
-		95A846C92C8AF441007CA97F /* CustomVerifyUiFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */; };
+		95A846C92C8AF441007CA97F /* CustomVerifyViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846C82C8AF441007CA97F /* CustomVerifyViewControllerFactory.swift */; };
 		95A846CB2C8B12A0007CA97F /* CustomConfigHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A846CA2C8B12A0007CA97F /* CustomConfigHandler.swift */; };
 		E27EAC7E274EC2A800336E5C /* ACRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = E27EAC7D274EC2A800336E5C /* ACRemoteConfig */; };
 		E2E5D3D9274EBC5700562431 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E5D3D8274EBC5700562431 /* AppDelegate.swift */; };
@@ -54,12 +55,13 @@
 		9591DDBD2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACRemoteConfigModelProtocol.swift; sourceTree = "<group>"; };
 		9591DDC12C885E2600D2DB56 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9591DDC82C88659700D2DB56 /* RemoteConfigModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigModel.swift; sourceTree = "<group>"; };
+		9594F9782C92F0F50007763D /* CustomMesageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMesageViewController.swift; sourceTree = "<group>"; };
 		95A846BD2C8AA883007CA97F /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		95A846BF2C8AA8A4007CA97F /* VerifyOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyOptions.swift; sourceTree = "<group>"; };
 		95A846C12C8AB708007CA97F /* VerifySource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifySource.swift; sourceTree = "<group>"; };
 		95A846C42C8AE709007CA97F /* CustomVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerificationViewController.swift; sourceTree = "<group>"; };
 		95A846C62C8AE710007CA97F /* CustomVerificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerificationViewModel.swift; sourceTree = "<group>"; };
-		95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerifyUiFactory.swift; sourceTree = "<group>"; };
+		95A846C82C8AF441007CA97F /* CustomVerifyViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerifyViewControllerFactory.swift; sourceTree = "<group>"; };
 		95A846CA2C8B12A0007CA97F /* CustomConfigHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomConfigHandler.swift; sourceTree = "<group>"; };
 		E27EAC7A274EBF7E00336E5C /* ACRemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ACRemoteConfig; path = ..; sourceTree = "<group>"; };
 		E27EAC80274EC7A500336E5C /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -111,7 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				9591DDBB2C8844EA00D2DB56 /* FirebaseRemoteConfigService.swift */,
-				95A846C82C8AF441007CA97F /* CustomVerifyUiFactory.swift */,
+				95A846C82C8AF441007CA97F /* CustomVerifyViewControllerFactory.swift */,
 				95A846CA2C8B12A0007CA97F /* CustomConfigHandler.swift */,
 			);
 			path = ServiceLayer;
@@ -131,6 +133,7 @@
 		9591DDC52C88657600D2DB56 /* PresentationLayer */ = {
 			isa = PBXGroup;
 			children = (
+				9594F9772C92F0D50007763D /* CustomMesageViewController */,
 				95A846C32C8AE6FE007CA97F /* CustomVerificationScreen */,
 				9591DDCA2C8865C600D2DB56 /* Main */,
 			);
@@ -164,6 +167,14 @@
 				95A846BD2C8AA883007CA97F /* MainViewModel.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		9594F9772C92F0D50007763D /* CustomMesageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9594F9782C92F0F50007763D /* CustomMesageViewController.swift */,
+			);
+			path = CustomMesageViewController;
 			sourceTree = "<group>";
 		};
 		95A846C32C8AE6FE007CA97F /* CustomVerificationScreen */ = {
@@ -329,7 +340,8 @@
 				E2E5D3DB274EBC5700562431 /* SceneDelegate.swift in Sources */,
 				95A846C22C8AB709007CA97F /* VerifySource.swift in Sources */,
 				95A846C52C8AE709007CA97F /* CustomVerificationViewController.swift in Sources */,
-				95A846C92C8AF441007CA97F /* CustomVerifyUiFactory.swift in Sources */,
+				9594F9792C92F0F50007763D /* CustomMesageViewController.swift in Sources */,
+				95A846C92C8AF441007CA97F /* CustomVerifyViewControllerFactory.swift in Sources */,
 				9591DDBE2C88450E00D2DB56 /* ACRemoteConfigModelProtocol.swift in Sources */,
 				95A846C02C8AA8A4007CA97F /* VerifyOptions.swift in Sources */,
 				95A846CB2C8B12A0007CA97F /* CustomConfigHandler.swift in Sources */,

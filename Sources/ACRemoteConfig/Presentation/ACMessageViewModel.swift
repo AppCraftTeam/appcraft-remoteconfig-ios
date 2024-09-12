@@ -9,14 +9,9 @@ import Foundation
 
 public class ACMessageViewModel {
     
-    public var actions: [ACMessageViewController.ActionModel]
     public var localeConfiguration: LocaleConfiguration
     
-    public init(
-        actions: [ACMessageViewController.ActionModel],
-        localeConfiguration: ACMessageViewModel.LocaleConfiguration
-    ) {
-        self.actions = actions
+    public init(localeConfiguration: ACMessageViewModel.LocaleConfiguration) {
         self.localeConfiguration = localeConfiguration
     }
     

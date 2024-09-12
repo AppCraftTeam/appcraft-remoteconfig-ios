@@ -7,16 +7,30 @@
 
 import UIKit
 
-/// A default implementation of the `ACVerifyUIFactory` protocol
-public class ACMessageViewControllerFactory: ACVerifyUIFactory {
+/// A default implementation of the `ACVerifyViewControllerFactory` protocol
+public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     
     /// The configuration settings for the default UI components
+    public var viewController: ACMessageViewControllerProtocol
     public var viewModel: ACMessageViewModel
-    
+
     // MARK: - Initialization
     
+    public static func make(
+        viewController: ACMessageViewControllerProtocol = ACMessageViewController(),
+        localeConfiguration: ACMessageViewModel.LocaleConfiguration = .default()
+    ) -> ACMessageViewControllerFactory {
+        ACMessageViewControllerFactory(
+            viewController: viewController,
+            viewModel: ACMessageViewModel(
+                localeConfiguration: localeConfiguration
+            )
+        )
+    }
+    
     /// Initializes the default UI factory
-    public init(viewModel: ACMessageViewModel) {
+    public init(viewController: ACMessageViewControllerProtocol, viewModel: ACMessageViewModel) {
+        self.viewController = viewController
         self.viewModel = viewModel
     }
     
@@ -28,7 +42,6 @@ public class ACMessageViewControllerFactory: ACVerifyUIFactory {
     ///   - message: The message otext
     ///   - actions: An array of buttons to display
     private func makeScreen(title: String?, message: String?, actions: [ACMessageViewController.ActionModel]) -> UIViewController {
-        let viewController = ACMessageViewController()
         viewController.titleText = title ?? ""
         viewController.subtitleText = message ?? ""
         viewController.addActions(actions)
@@ -40,7 +53,7 @@ public class ACMessageViewControllerFactory: ACVerifyUIFactory {
     /// Creates a technical works screen
     /// - Parameter tapTryAgain: The action to perform when the user taps the "Try Again" button
     public func makeTechnicalWorksAlert(tapTryAgain: (() -> Void)?) -> UIViewController {
-        return makeScreen(
+        makeScreen(
             title: viewModel.localeConfiguration.technicalWorksAlertTitle,
             message: viewModel.localeConfiguration.technicalWorksAlertMessage,
             actions: [
@@ -55,7 +68,7 @@ public class ACMessageViewControllerFactory: ACVerifyUIFactory {
     /// Creates an alert for when the app's version is below the minimum required version
     /// - Parameter tapOpenStore: The action to perform when the user taps the button to open the App Store
     public func makeIosMinimalVersionAlert(tapOpenStore: (() -> Void)?) -> UIViewController {
-        return makeScreen(
+        makeScreen(
             title: viewModel.localeConfiguration.iosMinimalVersionAlertTitle,
             message: viewModel.localeConfiguration.iosMinimalVersionAlertMessage,
             actions: [
@@ -76,7 +89,7 @@ public class ACMessageViewControllerFactory: ACVerifyUIFactory {
         tapOpenStore: (() -> Void)?,
         tapContinueWithoutUpdating: (() -> Void)?
     ) -> UIViewController {
-        return makeScreen(
+        makeScreen(
             title: viewModel.localeConfiguration.iosActualVersionAlertTitle,
             message: viewModel.localeConfiguration.iosActualVersionAlertMessage,
             actions: [

@@ -8,7 +8,7 @@
 import ACRemoteConfig
 import UIKit
 
-final class CustomVerifyUiFactory: ACVerifyUIFactory {
+final class CustomVerifyViewControllerFactory: ACVerifyViewControllerFactory {
     
     public var minAppVersion: String
     public var actualAppVersion: String
