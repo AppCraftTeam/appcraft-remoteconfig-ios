@@ -7,32 +7,22 @@
 //
 
 import UIKit
+
 public protocol ACMessageViewControllerProtocol: UIViewController {
+    var model: ACMessageViewModel { get set }
     var image: UIImage? { get set }
     var titleText: String { get set }
     var subtitleText: String { get set }
     
-    func addActions(_ actions: [ACMessageViewController.ActionModel])
+    func addActions(_ actions: [ACMessageViewModel.ActionModel])
 }
 
 open class ACMessageViewController: UIViewController, ACMessageViewControllerProtocol {
     
-    public var model: ACMessageViewModel?
-    public var actions: [ActionModel] = []
-    
-    // Action button model
-    public struct ActionModel {
-        let text: String
-        let action: () -> Void
-        
-        public init(text: String, action: @escaping () -> Void) {
-            self.text = text
-            self.action = action
+    public var model: ACMessageViewModel = ACMessageViewModel.default() {
+        didSet {
+            configureView(with: model)
         }
-    }
-    
-    public enum MessagePosition {
-        case top, center
     }
     
     // Label for the title
@@ -90,21 +80,28 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         set { contentStackView.spacing = newValue }
     }
     
-    public var messagePosition: MessagePosition = .top {
-        didSet { setupComponents() }
-    }
-    
     open override func viewDidLoad() {
         super.viewDidLoad()
         setupComponents()
+        configureView(with: model)
     }
     
     // MARK: - Setup Methods
+    
+    private func configureView(with model: ACMessageViewModel) {
+        self.titleText = model.title
+        self.subtitleText = model.subtitle
+        self.image = model.image
+        self.addActions(model.actions)
+    }
     
     private func setupComponents() {
         decorate()
         removeSubviews([contentStackView, actionsStackView])
         addSubviews([contentStackView, actionsStackView])
+        
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        actionsStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -114,7 +111,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
             actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
         
-        switch messagePosition {
+        switch model.messagePosition {
         case .top:
             contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         case .center:
@@ -131,7 +128,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     }
     
     private func setupImageView() {
-        if let image = imageView.image {
+        if imageView.image != nil {
             if imageView.superview == nil {
                 view.addSubview(imageView)
                 imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -149,9 +146,8 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         }
     }
     
-    open func addActions(_ actions: [ActionModel]) {
+    open func addActions(_ actions: [ACMessageViewModel.ActionModel]) {
         removeAllAction()
-        self.actions = actions
         for (index, action) in actions.enumerated() {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -178,13 +174,20 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     }
     
     open func decorate() {
-        view.backgroundColor = .white
+        view.backgroundColor = if #available(iOS 13, *) { .systemBackground } else { .white }
+        
+        titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        titleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        
+        subtitleLabel.font = .systemFont(ofSize: 16)
+        subtitleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        subtitleLabel.numberOfLines = 0
     }
     
     @objc
     private func buttonTapped(_ sender: UIButton) {
-        if actions.indices.contains(sender.tag) {
-            actions[sender.tag].action()
+        if model.actions.indices.contains(sender.tag) {
+            model.actions[sender.tag].action()
         }
     }
     

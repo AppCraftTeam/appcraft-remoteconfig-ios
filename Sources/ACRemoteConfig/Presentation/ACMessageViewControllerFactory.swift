@@ -12,7 +12,6 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     
     /// The configuration settings for the default UI components
     public var viewController: ACMessageViewControllerProtocol
-    public var viewModel: ACMessageViewModel
 
     // MARK: - Initialization
     
@@ -22,16 +21,14 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     ) -> ACMessageViewControllerFactory {
         ACMessageViewControllerFactory(
             viewController: viewController,
-            viewModel: ACMessageViewModel(
-                localeConfiguration: localeConfiguration
-            )
+            viewModel: ACMessageViewModel.default()
         )
     }
     
     /// Initializes the default UI factory
     public init(viewController: ACMessageViewControllerProtocol, viewModel: ACMessageViewModel) {
         self.viewController = viewController
-        self.viewModel = viewModel
+        self.viewController.model = viewModel
     }
     
     // MARK: - Alert Factory Helper
@@ -41,10 +38,10 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     ///   - title: The title text
     ///   - message: The message otext
     ///   - actions: An array of buttons to display
-    private func makeScreen(title: String?, message: String?, actions: [ACMessageViewController.ActionModel]) -> UIViewController {
-        viewController.titleText = title ?? ""
-        viewController.subtitleText = message ?? ""
-        viewController.addActions(actions)
+    private func makeScreen(title: String?, message: String?, actions: [ACMessageViewModel.ActionModel]) -> UIViewController {
+        viewController.model.title = title ?? ""
+        viewController.model.subtitle = message ?? ""
+        viewController.model.actions = actions
         return viewController
     }
     
@@ -54,11 +51,11 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     /// - Parameter tapTryAgain: The action to perform when the user taps the "Try Again" button
     public func makeTechnicalWorksAlert(tapTryAgain: (() -> Void)?) -> UIViewController {
         makeScreen(
-            title: viewModel.localeConfiguration.technicalWorksAlertTitle,
-            message: viewModel.localeConfiguration.technicalWorksAlertMessage,
+            title: viewController.model.localeConfiguration.technicalWorksAlertTitle,
+            message: viewController.model.localeConfiguration.technicalWorksAlertMessage,
             actions: [
                 .init(
-                    text: viewModel.localeConfiguration.tryAgainAlertActionTitle,
+                    text: viewController.model.localeConfiguration.tryAgainAlertActionTitle,
                     action: { tapTryAgain?() }
                 )
             ]
@@ -69,11 +66,11 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     /// - Parameter tapOpenStore: The action to perform when the user taps the button to open the App Store
     public func makeIosMinimalVersionAlert(tapOpenStore: (() -> Void)?) -> UIViewController {
         makeScreen(
-            title: viewModel.localeConfiguration.iosMinimalVersionAlertTitle,
-            message: viewModel.localeConfiguration.iosMinimalVersionAlertMessage,
+            title: viewController.model.localeConfiguration.iosMinimalVersionAlertTitle,
+            message: viewController.model.localeConfiguration.iosMinimalVersionAlertMessage,
             actions: [
                 .init(
-                    text: viewModel.localeConfiguration.appUpdateAlertActionTitle,
+                    text: viewController.model.localeConfiguration.appUpdateAlertActionTitle,
                     action: { tapOpenStore?() }
                 )
             ]
@@ -90,15 +87,15 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
         tapContinueWithoutUpdating: (() -> Void)?
     ) -> UIViewController {
         makeScreen(
-            title: viewModel.localeConfiguration.iosActualVersionAlertTitle,
-            message: viewModel.localeConfiguration.iosActualVersionAlertMessage,
+            title: viewController.model.localeConfiguration.iosActualVersionAlertTitle,
+            message: viewController.model.localeConfiguration.iosActualVersionAlertMessage,
             actions: [
                 .init(
-                    text: viewModel.localeConfiguration.appUpdateAlertActionTitle,
+                    text: viewController.model.localeConfiguration.appUpdateAlertActionTitle,
                     action: { tapOpenStore?() }
                 ),
                 .init(
-                    text: viewModel.localeConfiguration.continueWithoutUpdatingAlertActionTitle,
+                    text: viewController.model.localeConfiguration.continueWithoutUpdatingAlertActionTitle,
                     action: { tapContinueWithoutUpdating?() }
                 )
             ]

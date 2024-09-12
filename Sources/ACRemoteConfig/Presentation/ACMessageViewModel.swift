@@ -6,13 +6,36 @@
 //
 
 import Foundation
+import UIKit
 
 public class ACMessageViewModel {
     
+    public var title: String
+    public var subtitle: String
+    public var image: UIImage?
+    public var actions: [ACMessageViewModel.ActionModel]
+    public var messagePosition: ACMessageViewModel.MessagePosition
     public var localeConfiguration: LocaleConfiguration
     
-    public init(localeConfiguration: ACMessageViewModel.LocaleConfiguration) {
+    public init(
+        title: String,
+        subtitle: String,
+        image: UIImage?,
+        actions: [ACMessageViewModel.ActionModel],
+        messagePosition: ACMessageViewModel.MessagePosition,
+        localeConfiguration: ACMessageViewModel.LocaleConfiguration
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.image = image
+        self.actions = actions
+        self.messagePosition = messagePosition
         self.localeConfiguration = localeConfiguration
+    }
+    
+    /// Returns the default view model
+    public static func `default`() -> ACMessageViewModel {
+        ACMessageViewModel(title: "", subtitle: "", image: nil, actions: [], messagePosition: .top, localeConfiguration: .default())
     }
     
     /// The default configuration for the UI related to app availability and verification.
@@ -95,5 +118,21 @@ public class ACMessageViewModel {
             self.continueWithoutUpdatingAlertActionTitle = continueWithoutUpdatingAlertActionTitle
             self.appUpdateAlertActionTitle = appUpdateAlertActionTitle
         }
+    }
+    
+    // Action button model
+    public struct ActionModel {
+        let text: String
+        let action: () -> Void
+        
+        public init(text: String, action: @escaping () -> Void) {
+            self.text = text
+            self.action = action
+        }
+    }
+    
+    // Layout for components
+    public enum MessagePosition {
+        case top, center
     }
 }
