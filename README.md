@@ -146,4 +146,5 @@ This library is licensed under the MIT License.
 
 ## Author
 Email: <moslienko.p@gmail.com> <br>
+Email: <dmitriyap11@gmail.com> <br>
 [Damian Bazhenov] (https://github.com/uxn0w)
