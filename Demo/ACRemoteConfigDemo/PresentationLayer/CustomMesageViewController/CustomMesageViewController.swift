@@ -11,7 +11,7 @@ import UIKit
 final class CustomMesageViewController: ACMessageViewController {
     
     override func decorate() {
-        titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        titleLabel.font = .systemFont(ofSize: 24, weight: .bold)
         titleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
         
         subtitleLabel.font = .systemFont(ofSize: 16)

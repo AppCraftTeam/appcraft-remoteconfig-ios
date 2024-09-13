@@ -55,8 +55,8 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        setupComponents()
         configureView(with: model)
+        setupComponents()
     }
     
     // MARK: - Setup Methods
