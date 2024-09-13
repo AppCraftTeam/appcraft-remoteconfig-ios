@@ -10,16 +10,12 @@ import UIKit
 
 public protocol ACMessageViewControllerProtocol: UIViewController {
     var model: ACMessageViewModel { get set }
-    var image: UIImage? { get set }
-    var titleText: String { get set }
-    var subtitleText: String { get set }
-    
     func addActions(_ actions: [ACMessageViewModel.ActionModel])
 }
 
 open class ACMessageViewController: UIViewController, ACMessageViewControllerProtocol {
     
-    public var model: ACMessageViewModel = ACMessageViewModel.default() {
+    public var model: ACMessageViewModel = ACMessageViewModel() {
         didSet {
             configureView(with: model)
         }
@@ -48,32 +44,9 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         return stackView
     }()
     
-    // Title text
-    public var titleText: String {
-        get { titleLabel.text ?? "" }
-        set { titleLabel.text = newValue }
-    }
-    
-    // Subtitle text
-    public var subtitleText: String {
-        get { subtitleLabel.text ?? "" }
-        set {
-            subtitleLabel.text = newValue
-            setupSubtitleLabel()
-        }
-    }
-    
+  
     // Icon image view
     public private(set) var imageView = UIImageView()
-    
-    // View image
-    open var image: UIImage? {
-        get { imageView.image }
-        set {
-            imageView.image = newValue
-            setupImageView()
-        }
-    }
     
     public var contentSpacing: CGFloat {
         get { contentStackView.spacing }
@@ -89,9 +62,9 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     // MARK: - Setup Methods
     
     private func configureView(with model: ACMessageViewModel) {
-        self.titleText = model.title
-        self.subtitleText = model.subtitle
-        self.image = model.image
+        self.titleLabel.text = model.title
+        self.subtitleLabel.text = model.subtitle
+        self.imageView.image = model.image
         self.addActions(model.actions)
     }
     
@@ -120,7 +93,7 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
     }
     
     private func setupSubtitleLabel() {
-        if subtitleText.isEmpty {
+        if model.subtitle.isEmpty {
             removeSubviews([subtitleLabel])
         } else if subtitleLabel.superview == nil {
             contentStackView.addArrangedSubview(subtitleLabel)

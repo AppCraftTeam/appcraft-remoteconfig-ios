@@ -18,12 +18,12 @@ public class ACMessageViewModel {
     public var localeConfiguration: LocaleConfiguration
     
     public init(
-        title: String,
-        subtitle: String,
-        image: UIImage?,
-        actions: [ACMessageViewModel.ActionModel],
-        messagePosition: ACMessageViewModel.MessagePosition,
-        localeConfiguration: ACMessageViewModel.LocaleConfiguration
+        title: String = "",
+        subtitle: String = "",
+        image: UIImage? = nil,
+        actions: [ACMessageViewModel.ActionModel] = [],
+        messagePosition: ACMessageViewModel.MessagePosition = .top,
+        localeConfiguration: ACMessageViewModel.LocaleConfiguration = .default()
     ) {
         self.title = title
         self.subtitle = subtitle
@@ -31,11 +31,6 @@ public class ACMessageViewModel {
         self.actions = actions
         self.messagePosition = messagePosition
         self.localeConfiguration = localeConfiguration
-    }
-    
-    /// Returns the default view model
-    public static func `default`() -> ACMessageViewModel {
-        ACMessageViewModel(title: "", subtitle: "", image: nil, actions: [], messagePosition: .top, localeConfiguration: .default())
     }
     
     /// The default configuration for the UI related to app availability and verification.

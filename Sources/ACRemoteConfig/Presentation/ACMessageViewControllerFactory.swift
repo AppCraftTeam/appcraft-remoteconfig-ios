@@ -21,7 +21,7 @@ public class ACMessageViewControllerFactory: ACVerifyViewControllerFactory {
     ) -> ACMessageViewControllerFactory {
         ACMessageViewControllerFactory(
             viewController: viewController,
-            viewModel: ACMessageViewModel.default()
+            viewModel: ACMessageViewModel(localeConfiguration: localeConfiguration)
         )
     }
     
