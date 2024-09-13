@@ -35,37 +35,32 @@ final class MainViewModel {
         var verifyApplicationAvailability: ACVerifyApplicationAvailability {
             switch self.currentOption {
             case .defaultScreen:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
-                result.viewController = parentScreen
-                result.customUIFactory.style.presentation.size = .percent(value: 1.0)
+                let result = ACVerifyApplicationAvailability(parentViewController: parentScreen)
                 return result
             case .defaultScreenWithOptions:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
-                result.viewController = parentScreen
-                result.customUIFactory.style.presentation.size = .percent(value: 0.5)
-                result.customUIFactory.style.technicalWorkButtonStyle = ACStyle<UIButton>(make: { button in
-                    button.backgroundColor = .systemBlue
-                    button.setTitleColor(.white, for: [])
-                    button.layer.cornerRadius = 10
-                })
-
+                let result = ACVerifyApplicationAvailability(
+                    parentViewController: parentScreen,
+                    viewControllerFactory: ACMessageViewControllerFactory.make(viewController: CustomMesageViewController())
+                )
                 return result
             case .customScreen:
-                let result = ACVerifyApplicationAvailability(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
-                result.viewController = parentScreen
-                result.customUIFactory = CustomVerifyUiFactory(
-                    minAppVersion: configModel.iosMinimalVersion,
-                    actualAppVersion: configModel.iosActualVersion
+                let result = ACVerifyApplicationAvailability(
+                    parentViewController: parentScreen,
+                    viewControllerFactory: CustomVerifyViewControllerFactory(
+                        minAppVersion: configModel.iosMinimalVersion,
+                        actualAppVersion: configModel.iosActualVersion
+                    )
                 )
                 return result
             case .customHandler:
-                let result = CustomConfigHandler(configuration: ACVerifyConfiguration(urlToAppInAppStore: nil))
-                result.viewController = parentScreen
+                let result = CustomConfigHandler()
+                result.parentViewController = parentScreen
                 return result
             }
         }
         
         verifyApplicationAvailability.verify(fromModel: configModel) { verifed in
+            print("verifed - \(verifed)")
             guard verifed else { return }
             DispatchQueue.main.async {
                 let alert = UIAlertController(title: "App verifed! Allow show next screen", message: nil, preferredStyle: .alert)

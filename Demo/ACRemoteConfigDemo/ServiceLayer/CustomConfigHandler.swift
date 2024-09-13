@@ -10,7 +10,29 @@ import UIKit
 
 open class CustomConfigHandler: ACVerifyApplicationAvailability {
     
-    open override func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
+    open override func verify(fromModel model: ACRemoteConfig?, completion: VerifyCompletion?, didTryAgain: (() -> Void)?) {
+        guard let model = model else {
+            completion?(true)
+            return
+        }
+        
+        if model.technicalWorks {
+            showTechnicalWorksAlert(didTryAgain: {
+                didTryAgain?()
+                completion?(false)
+            }, completion: completion)
+        } else if let appVersion = getAppVersion() {
+            if isVersionLower(appVersion, than: model.iosMinimalVersion) {
+                showIosMinimalVersionAlert(completion: completion)
+            } else {
+                completeVerification(completion)
+            }
+        } else {
+            completion?(true)
+        }
+    }
+    
+    private func showTechnicalWorksAlert(didTryAgain: (() -> Void)?, completion: VerifyCompletion?) {
         showAlert()
         
         func showAlert() {
@@ -23,11 +45,11 @@ open class CustomConfigHandler: ACVerifyApplicationAvailability {
             
             alert.addAction(tryAgainAction)
             
-            viewController?.present(alert, animated: true, completion: nil)
+            parentViewController?.present(alert, animated: true, completion: nil)
         }
     }
     
-    open override func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
+    private func showIosMinimalVersionAlert(completion: VerifyCompletion?) {
         showAlert()
         
         func showAlert() {
@@ -42,26 +64,7 @@ open class CustomConfigHandler: ACVerifyApplicationAvailability {
             
             alert.addAction(tryAgainAction)
             
-            viewController?.present(alert, animated: true, completion: nil)
+            parentViewController?.present(alert, animated: true, completion: nil)
         }
-    }
-    
-    open override func showIosActualVersionAlert(completion: VerifyCompletion?) {
-        // Ignore actual
-        completion?(true)
-    }
-}
-
-// MARK: - UI
-private extension CustomConfigHandler {
-    
-    func openAppInAppStore(completion: ((Bool) -> Void)?) {
-        guard let url = self.configuration.urlToAppInAppStore else {
-            print("[ACVerifyApplicationAvailability] - [openAppUpdate] - urlToAppInAppStore == nil")
-            completion?(false)
-            return
-        }
-        
-        UIApplication.shared.open(url, options: [:], completionHandler: completion)
     }
 }

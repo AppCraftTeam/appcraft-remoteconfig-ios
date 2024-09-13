@@ -8,36 +8,17 @@
 
 import UIKit
 
-// Protocol defining the required interface for a message view controller
 public protocol ACMessageViewControllerProtocol: UIViewController {
-    // The image that can be displayed in the view
-    var image: UIImage? { get set }
-    
-    // The main title text of the view
-    var titleText: String { get set }
-    
-    // The subtitle text of the view
-    var subtitleText: String { get set }
-    
-    // Add action buttons to the view controller
-    // Parameters:
-    // - actions: An array of button actions
-    func addActions(_ actions: [ACMessageViewController.ActionModel])
+    var model: ACMessageViewModel { get set }
+    func addActions(_ actions: [ACMessageViewModel.ActionModel])
 }
 
-// A customizable message view controller that conforms to `ACMessageViewControllerProtocol
 open class ACMessageViewController: UIViewController, ACMessageViewControllerProtocol {
     
-    // A button action with a text, style, and tap closure.
-    public struct ActionModel {
-        let text: String
-        let style: ACStyle<UIButton>
-        let action: () -> Void
-    }
-    
-    // Enum to define where the message content should be displayed
-    public enum MessagePosition {
-        case top, center
+    public var model: ACMessageViewModel = ACMessageViewModel() {
+        didSet {
+            configureView(with: model)
+        }
     }
     
     // Label for the title
@@ -63,161 +44,133 @@ open class ACMessageViewController: UIViewController, ACMessageViewControllerPro
         return stackView
     }()
     
-    // Title text
-    public var titleText: String {
-        get { titleLabel.text ?? "" }
-        set { titleLabel.text = newValue }
-    }
-    
-    // Style for the title label
-    public var titleLabelStyle = ACStyle<UILabel>(make: { label in
-        label.font = .systemFont(ofSize: 24, weight: .semibold)
-        label.textColor = if #available(iOS 13, *) { .label } else { .black }
-    })
-    
-    // Subtitle text
-    public var subtitleText: String {
-        get { subtitleLabel.text ?? "" }
-        set {
-            self.subtitleLabel.text = newValue
-            self.setupSubtitleLabel()
-        }
-    }
-    
-    // Style for the subtitle label
-    public var subTitleLabelStyle = ACStyle<UILabel>(make: { label in
-        label.font = .systemFont(ofSize: 16)
-        label.textColor = if #available(iOS 13, *) { .label } else { .black }
-        label.numberOfLines = 0
-    })
-    
+  
     // Icon image view
     public private(set) var imageView = UIImageView()
     
-    // View image
-    open var image: UIImage? {
-        get { imageView.image }
-        set {
-            self.imageView.image = newValue
-            self.setupImageView()
-        }
-    }
-    
-    // Configure the spacing between the content stack view elements.
     public var contentSpacing: CGFloat {
         get { contentStackView.spacing }
         set { contentStackView.spacing = newValue }
     }
     
-    // Controls the message components position
-    public var messagePosition: MessagePosition = .top {
-        didSet {
-            self.setupComponents()
-        }
-    }
-    
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupComponents()
+        configureView(with: model)
+        setupComponents()
     }
     
-    // Sets up the UI components
-    func setupComponents() {
-        self.view.backgroundColor = .white
-        self.contentStackView.removeFromSuperview()
-        self.actionsStackView.removeFromSuperview()
+    // MARK: - Setup Methods
+    
+    private func configureView(with model: ACMessageViewModel) {
+        self.titleLabel.text = model.title
+        self.subtitleLabel.text = model.subtitle
+        self.imageView.image = model.image
+        self.addActions(model.actions)
+    }
+    
+    private func setupComponents() {
+        decorate()
+        removeSubviews([contentStackView, actionsStackView])
+        addSubviews([contentStackView, actionsStackView])
         
-        self.addSubviews([contentStackView, actionsStackView])
-        self.contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        self.actionsStackView.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        actionsStackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             contentStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            contentStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 20),
-            
             actionsStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             actionsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            actionsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
-        self.titleLabelStyle.make(titleLabel)
-        self.subTitleLabelStyle.make(subtitleLabel)
         
-        switch messagePosition {
+        switch model.messagePosition {
         case .top:
-            NSLayoutConstraint.activate([
-                contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            ])
+            contentStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         case .center:
-            NSLayoutConstraint.activate([
-                contentStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
+            contentStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         }
     }
     
-    // Removes all action buttons
-    func removeAllAction() {
-        self.actionsStackView.removeAllArrangedSubviews()
-    }
-    
-    // Adds an array of action buttons to the stack view
-    open func addActions(_ actions: [ActionModel]) {
-        for action in actions {
-            let button = ActionButton()
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            button.setTitle(action.text, for: .normal)
-            button.onAction = action.action
-            action.style.make(button)
-            self.actionsStackView.addArrangedSubview(button)
+    private func setupSubtitleLabel() {
+        if model.subtitle.isEmpty {
+            removeSubviews([subtitleLabel])
+        } else if subtitleLabel.superview == nil {
+            contentStackView.addArrangedSubview(subtitleLabel)
         }
     }
     
-    // MARK: - Setup methods
-    
-    // Configures the subtitle label
-    open func setupSubtitleLabel() {
-        if subtitleText.isEmpty {
-            self.subtitleLabel.removeFromSuperview()
-            self.contentStackView.removeArrangedSubview(subtitleLabel)
-        } else {
-            if subtitleLabel.superview == nil {
-                self.contentStackView.addArrangedSubview(subtitleLabel)
-            }
-        }
-    }
-    
-    // Configures the image view
-    open func setupImageView() {
-        if image == nil {
-            self.imageView.removeFromSuperview()
-        } else {
+    private func setupImageView() {
+        if imageView.image != nil {
             if imageView.superview == nil {
-                self.view.addSubview(imageView)
-                self.imageView.translatesAutoresizingMaskIntoConstraints = false
+                view.addSubview(imageView)
+                imageView.translatesAutoresizingMaskIntoConstraints = false
                 
                 NSLayoutConstraint.activate([
                     imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
                     imageView.topAnchor.constraint(greaterThanOrEqualTo: contentStackView.bottomAnchor, constant: 16),
-                    imageView.bottomAnchor.constraint(lessThanOrEqualTo: actionsStackView.topAnchor, constant: -16),
                     imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
                     imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
                     imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
                 ])
             }
+        } else {
+            removeSubviews([imageView])
         }
     }
     
-    // Add an array of subviews to the view.
-    func addSubviews(_ subviews: [UIView]) {
+    open func addActions(_ actions: [ACMessageViewModel.ActionModel]) {
+        removeAllAction()
+        for (index, action) in actions.enumerated() {
+            let button = UIButton()
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            button.setTitle(action.text, for: .normal)
+            if #available(iOS 13.0, *) {
+                button.setTitleColor(.label, for: [])
+            } else {
+                button.setTitleColor(.black, for: [])
+            }
+            button.tag = index
+            button.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
+            
+            self.actionsStackView.addArrangedSubview(button)
+        }
+    }
+    
+    private func removeSubviews(_ subviews: [UIView]) {
+        subviews.forEach { $0.removeFromSuperview() }
+    }
+    
+    private func removeAllAction() {
+        actionsStackView.removeAllArrangedSubviews()
+    }
+    
+    open func decorate() {
+        view.backgroundColor = if #available(iOS 13, *) { .systemBackground } else { .white }
+        
+        titleLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        titleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        
+        subtitleLabel.font = .systemFont(ofSize: 16)
+        subtitleLabel.textColor = if #available(iOS 13, *) { .label } else { .black }
+        subtitleLabel.numberOfLines = 0
+    }
+    
+    @objc
+    private func buttonTapped(_ sender: UIButton) {
+        if model.actions.indices.contains(sender.tag) {
+            model.actions[sender.tag].action()
+        }
+    }
+    
+    private func addSubviews(_ subviews: [UIView]) {
         subviews.forEach({ self.view.addSubview($0) })
     }
 }
 
 private extension UIStackView {
     func removeAllArrangedSubviews() {
-        for subview in self.arrangedSubviews {
-            subview.removeFromSuperview()
-        }
+        arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
 }
